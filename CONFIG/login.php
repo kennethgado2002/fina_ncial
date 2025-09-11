@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST["password"];
 
     // Check credentials in the users table
-    $sql = "SELECT id, username, password, role_id FROM users WHERE username = ?";
+    $sql = "SELECT id, username, password, role_id, emp_id FROM users WHERE username = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $username);
     $stmt->execute();
@@ -19,18 +19,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($password === $row["password"]) { // Password is NOT hashed
             $_SESSION["id"] = $row["id"];
             $_SESSION["role_id"] = $row["role_id"];
+            $_SESSION["emp_id"] = $row["role_id"];
 
             // Redirect to a unified dashboard
-            header("Location: /PANEL");
+            $_SESSION['message'] = "Succesfully logged in.";
+            header("Location: ../PANEL/");
             exit();
         } else {
             $_SESSION['error'] = "Invalid username or password.";
-            header("Location: ../index.php");
+            header("Location: ../");
             exit();
         }
     } else {
         $_SESSION['error'] = "User not found.";
-        header("Location: ../index.php");
+        header("Location: ../");
             exit();
     }
 }

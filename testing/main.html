@@ -1,96 +1,37 @@
-<?php
-session_start();
-if (isset($_SESSION["id"])) {
-    header("Location: ../PANEL/");
-    exit();
-}
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image" href="../ASSETS/img/logo1.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="ASSETS/css/style_index.css">
+    <link rel="stylesheet" href="style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
    
     <link
     href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
     rel="stylesheet"
 />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,
 100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,
 500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <title>Imarket</title>
+    <title>User</title>
 </head>
 <body>
    <!-- LOGIN MODAL -->
-    <?php
-    // Notification alert for error
-    if (isset($_SESSION['error'])) {
-        echo '<div class="notification-alert error" id="notificationError">'
-            . htmlspecialchars($_SESSION['error']) .
-            '<span class="close-alert" onclick="document.getElementById(\'notificationError\').style.display=\'none\'">&times;</span></div>';
-        unset($_SESSION['error']);
-    }
-    ?>
-    <style>
-        .notification-alert {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            z-index: 9999;
-            min-width: 250px;
-            padding: 16px 24px;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 16px;
-            box-shadow: 0 2px 8px rgba(255, 254, 254, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            animation: fadeIn 0.5s;
-        }
-        .notification-alert.error { background: #dc3545; }
-        .close-alert {
-            margin-left: 16px;
-            cursor: pointer;
-            font-size: 20px;
-            font-weight: bold;
-            color: #fff;
-            transition: color 0.2s;
-        }
-        .close-alert:hover {
-            color: #00153d;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px);}
-            to { opacity: 1; transform: translateY(0);}
-        }
-    </style>
-    <script>
-        // Auto-hide notification after 5 seconds
-        setTimeout(function() {
-            var error = document.getElementById('notificationError');
-            if (error) error.style.display = 'none';
-        }, 5000);
-    </script>
-    <div class="login-modal" id="loginModal">
+<div class="login-modal" id="loginModal">
     <div class="login-content">
         <span class="close-btn" id="closeLogin">&times;</span>
         <h2>Login</h2>
-        <form method="POST" action="CONFIG/login.php">
+        <form>
             <label for="username">Username</label>
-            <input type="text" id="username" name="username" placeholder="Enter username" required>
+            <input type="text" id="username" placeholder="Enter username" required>
 
             <label for="password">Password</label>
             <div class="password-wrapper">
-                <input type="password" id="password" name="password" placeholder="Enter password" required>
+                <input type="password" id="password" placeholder="Enter password" required>
                 <i class="ri-eye-line" id="togglePassword"></i>
             </div>
 
@@ -135,7 +76,7 @@ if (isset($_SESSION["id"])) {
         <!-- Social login buttons -->
         <div class="social-login">
             <button type="button" class="google-btn">
-                <img src="ASSETS/img/google.png" alt="Google Logo">
+                <img src="images/google.png" alt="Google Logo">
                 Sign up with Google
             </button>
             <button type="button" class="facebook-btn">
@@ -155,7 +96,7 @@ if (isset($_SESSION["id"])) {
 
 <header>
   <div class="logo">
-    <img src="ASSETS/img/logo.png" alt="IMARKET PH Logo">
+    <img src="images/logo.png" alt="IMARKET PH Logo">
   </div>
 
   <ul class="navbar" id="navbar">
@@ -193,18 +134,22 @@ if (isset($_SESSION["id"])) {
   <div class="bx bx-menu" id="menu-icon"></div>
 </div>
 
+
+
 </header>
+
+
 
 <!-- Overlay background -->
 <div class="overlay" id="overlay"></div>
 
 <section class="hero">
   <div class="hero-slides">
-    <img class="slide active" src="ASSETS/img/clothes.webp" alt="Slide 1">
-    <img class="slide" src="ASSETS/img/soap.jpg" alt="Slide 2">
-    <img class="slide" src="ASSETS/img/pc.webp" alt="Slide 3">
-    <img class="slide" src="ASSETS/img/home.jpg" alt="Slide 4">
-    <img class="slide" src="ASSETS/img/school.webp" alt="Slide 5">
+    <img class="slide active" src="images/clothes.webp" alt="Slide 1">
+    <img class="slide" src="images/soap.jpg" alt="Slide 2">
+    <img class="slide" src="images/pc.webp" alt="Slide 3">
+    <img class="slide" src="images/home.jpg" alt="Slide 4">
+    <img class="slide" src="images/school.webp" alt="Slide 5">
   </div>
 
   <div class="hero-content">
@@ -223,7 +168,6 @@ if (isset($_SESSION["id"])) {
   </div>
 </section>
 
-
 <section class="feature">
   <div class="middle-text">
     <h2>Discover <span>Quality Products</span></h2>
@@ -233,7 +177,7 @@ if (isset($_SESSION["id"])) {
   <!-- Product 1 -->
   <div class="product-card">
     <div class="product-img">
-      <img src="ASSETS/img/sneakers.webp" alt="Men's Sneakers">
+      <img src="images/sneakers.webp" alt="Men's Sneakers">
       <span class="discount">-35%</span>
     </div>
     <div class="product-info">
@@ -251,7 +195,7 @@ if (isset($_SESSION["id"])) {
   <!-- Product 2 -->
   <div class="product-card">
     <div class="product-img">
-      <img src="ASSETS/img/headset.jpg" alt="Gaming Headset">
+      <img src="images/headset.jpg" alt="Gaming Headset">
       <span class="discount">-50%</span>
     </div>
     <div class="product-info">
@@ -269,7 +213,7 @@ if (isset($_SESSION["id"])) {
   <!-- Product 3 -->
   <div class="product-card">
     <div class="product-img">
-      <img src="ASSETS/img/back.jpg" alt="Casual Backpack">
+      <img src="images/back.jpg" alt="Casual Backpack">
       <span class="discount">-40%</span>
     </div>
     <div class="product-info">
@@ -287,7 +231,7 @@ if (isset($_SESSION["id"])) {
   <!-- Product 4 -->
   <div class="product-card">
     <div class="product-img">
-      <img src="ASSETS/img/relo.jpg" alt="Smart Watch">
+      <img src="images/relo.jpg" alt="Smart Watch">
       <span class="discount">-60%</span>
     </div>
     <div class="product-info">
@@ -305,7 +249,7 @@ if (isset($_SESSION["id"])) {
   <!-- Product 5 -->
   <div class="product-card">
     <div class="product-img">
-      <img src="ASSETS/img/lamp.jpg" alt="LED Desk Lamp">
+      <img src="images/lamp.jpg" alt="LED Desk Lamp">
       <span class="discount">-25%</span>
     </div>
     <div class="product-info">
@@ -323,7 +267,7 @@ if (isset($_SESSION["id"])) {
   <!-- Product 6 -->
   <div class="product-card">
     <div class="product-img">
-      <img src="ASSETS/img/earbuds.jpg" alt="Wireless Earbuds">
+      <img src="images/earbuds.jpg" alt="Wireless Earbuds">
       <span class="discount">-30%</span>
     </div>
     <div class="product-info">
@@ -341,7 +285,7 @@ if (isset($_SESSION["id"])) {
   <!-- Product 7 -->
   <div class="product-card">
     <div class="product-img">
-      <img src="ASSETS/img/mouse.jpg" alt="Gaming Mouse">
+      <img src="images/mouse.jpg" alt="Gaming Mouse">
       <span class="discount">-45%</span>
     </div>
     <div class="product-info">
@@ -359,7 +303,7 @@ if (isset($_SESSION["id"])) {
   <!-- Product 8 -->
   <div class="product-card">
     <div class="product-img">
-      <img src="ASSETS/img/hoodie.jpg" alt="Hooded Jacket">
+      <img src="images/hoodie.jpg" alt="Hooded Jacket">
       <span class="discount">-35%</span>
     </div>
     <div class="product-info">
@@ -377,7 +321,7 @@ if (isset($_SESSION["id"])) {
   <!-- Product 9 -->
   <div class="product-card">
     <div class="product-img">
-      <img src="ASSETS/img/keyboard.jpg" alt="Mechanical Keyboard">
+      <img src="images/keyboard.jpg" alt="Mechanical Keyboard">
       <span class="discount">-55%</span>
     </div>
     <div class="product-info">
@@ -395,7 +339,7 @@ if (isset($_SESSION["id"])) {
   <!-- Product 10 -->
   <div class="product-card">
     <div class="product-img">
-      <img src="ASSETS/img/water.jpg" alt="Insulated Water Bottle">
+      <img src="images/water.jpg" alt="Insulated Water Bottle">
       <span class="discount">-20%</span>
     </div>
     <div class="product-info">
@@ -423,7 +367,7 @@ if (isset($_SESSION["id"])) {
     <!-- Product 1 -->
     <div class="product-card">
       <div class="product-img">
-        <img src="ASSETS/img/airpods.jpg" alt="AirPods Pro 2">
+        <img src="images/airpods.jpg" alt="AirPods Pro 2">
         <span class="discount">NEW</span>
       </div>
       <div class="product-info">
@@ -440,7 +384,7 @@ if (isset($_SESSION["id"])) {
     <!-- Product 2 -->
     <div class="product-card">
       <div class="product-img">
-        <img src="ASSETS/img/shoes.jpg" alt="Nike Dunk Low">
+        <img src="images/shoes.jpg" alt="Nike Dunk Low">
         <span class="discount">NEW</span>
       </div>
       <div class="product-info">
@@ -457,7 +401,7 @@ if (isset($_SESSION["id"])) {
     <!-- Product 3 -->
     <div class="product-card">
       <div class="product-img">
-        <img src="ASSETS/img/controller.jpg" alt="PS5 DualSense Edge">
+        <img src="images/controller.jpg" alt="PS5 DualSense Edge">
         <span class="discount">NEW</span>
       </div>
       <div class="product-info">
@@ -474,7 +418,7 @@ if (isset($_SESSION["id"])) {
     <!-- Product 4 -->
     <div class="product-card">
       <div class="product-img">
-        <img src="ASSETS/img/ultra.jpg" alt="Smart Watch Ultra">
+        <img src="images/ultra.jpg" alt="Smart Watch Ultra">
         <span class="discount">NEW</span>
       </div>
       <div class="product-info">
@@ -491,7 +435,7 @@ if (isset($_SESSION["id"])) {
     <!-- Product 5 -->
     <div class="product-card">
       <div class="product-img">
-        <img src="ASSETS/img/jbl.png" alt="JBL Go 4 Speaker">
+        <img src="images/jbl.png" alt="JBL Go 4 Speaker">
         <span class="discount">NEW</span>
       </div>
       <div class="product-info">
@@ -541,10 +485,10 @@ if (isset($_SESSION["id"])) {
     <div class="footer-section">
       <h5>Payment Methods</h5>
       <div class="footer-logos">
-        <img src="ASSETS/img/visa.png" alt="Visa">
-        <img src="ASSETS/img/mastercard.png" alt="Mastercard">
-        <img src="ASSETS/img/gcash.png" alt="GCash">
-        <img src="ASSETS/img/maya.png" alt="Paymaya">
+        <img src="images/visa.png" alt="Visa">
+        <img src="images/mastercard.png" alt="Mastercard">
+        <img src="images/gcash.png" alt="GCash">
+        <img src="images/maya.png" alt="Paymaya">
       </div>
     </div>
 
@@ -552,10 +496,10 @@ if (isset($_SESSION["id"])) {
     <div class="footer-section">
       <h5>Delivery Services</h5>
       <div class="footer-logos">
-        <img src="ASSETS/img/jnt.png" alt="J&T Express">
-        <img src="ASSETS/img/ninjavan.jpg" alt="Ninja Van">
-        <img src="ASSETS/img/lbc.png" alt="LBC Express">
-        <img src="ASSETS/img/flash.png" alt="Flash Express">
+        <img src="images/jnt.png" alt="J&T Express">
+        <img src="images/ninjavan.jpg" alt="Ninja Van">
+        <img src="images/lbc.png" alt="LBC Express">
+        <img src="images/flash.png" alt="Flash Express">
       </div>
     </div>
 
@@ -563,10 +507,10 @@ if (isset($_SESSION["id"])) {
     <div class="footer-section">
       <h5>Follow Us</h5>
       <div class="footer-socials">
-        <a href="#"><img src="ASSETS/img/facebook.png" alt="Facebook"></a>
-        <a href="#"><img src="ASSETS/img/instagram.jpg" alt="Instagram"></a>
-        <a href="#"><img src="ASSETS/img/twitter.png" alt="Twitter"></a>
-        <a href="#"><img src="ASSETS/img/youtube.png" alt="YouTube"></a>
+        <a href="#"><img src="images/facebook.png" alt="Facebook"></a>
+        <a href="#"><img src="images/instagram.jpg" alt="Instagram"></a>
+        <a href="#"><img src="images/twitter.png" alt="Twitter"></a>
+        <a href="#"><img src="images/youtube.png" alt="YouTube"></a>
       </div>
     </div>
 
@@ -576,8 +520,8 @@ if (isset($_SESSION["id"])) {
     <p>© 2025 All Rights Reserved by ImarketPH</p>
   </div>
 </footer>
+
       <script src="https://unpkg.com/scrollreveal"></script>
-      <script src="ASSETS/js/script.js"></script>
-        
+    <script src="script.js"></script>
 </body>
 </html>
