@@ -282,19 +282,19 @@ $emp_data = ($result->num_rows > 0) ? $result->fetch_assoc() : ["fname" => "Unkn
                 </a>
                 <ul class="submenu">
                     <li style="display: <?= $collection_visible_gateway ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-file-invoice"></i> Gateway Reconciliation</a>
+                        <a href="../COLLECTION/gateway_r.php"><i class="fa-solid fa-file-invoice"></i> Gateway Reconciliation</a>
                     </li>
                     <li style="display: <?= $collection_visible_cod ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-truck-fast"></i> COD Reconciliation</a>
+                        <a href="../COLLECTION/cod_r.php"><i class="fa-solid fa-truck-fast"></i> COD Reconciliation</a>
                     </li>
                     <li style="display: <?= $collection_visible_bank ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-building-columns"></i> Bank Deposit Matching</a>
+                        <a href="../COLLECTION/bank-deposit_m.php"><i class="fa-solid fa-building-columns"></i> Bank Deposit Matching</a>
                     </li>
                     <li style="display: <?= $collection_visible_refund ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-arrow-rotate-left"></i> Refund Offsets</a>
+                        <a href="../COLLECTION/refund_o.php"><i class="fa-solid fa-arrow-rotate-left"></i> Refund Offsets</a>
                     </li>
                     <li style="display: <?= $collection_visible_cashflow ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-chart-line"></i> Cash Flow Reporting</a>
+                        <a href="../COLLECTION/cash-flow_r.php"><i class="fa-solid fa-chart-line"></i> Cash Flow Reporting</a>
                     </li>
                 </ul>
                 <span class="tooltip">Collection</span>
