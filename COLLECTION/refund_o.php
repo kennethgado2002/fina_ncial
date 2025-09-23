@@ -3,1167 +3,1388 @@ session_start();
 include "../PANEL/panel.php";
 ?>
 
-<link rel="stylesheet" href="../COLLECTION/ASSETS/css/style.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --header-height: 70px;
+            --transition: all 0.3s ease;
+            --pending: #f39c12;
+            --linked: #3498db;
+            --offset: #2ecc71;
+            --audit: #9b59b6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Layout */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+            white-space: nowrap;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--secondary);
+            cursor: pointer;
+        }
+
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--secondary);
+        }
+
+        .menu-item i {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            transition: var(--transition);
+        }
+
+        /* Header */
+        .header {
+            height: var(--header-height);
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 30px;
+        }
+
+        .page-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .card-icon.pending {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: #d35400;
+        }
+
+        .card-icon.linked {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: #2980b9;
+        }
+
+        .card-icon.offset {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: #27ae60;
+        }
+
+        .card-icon.audit {
+            background-color: rgba(155, 89, 182, 0.2);
+            color: #8e44ad;
+        }
+
+        .dashboard-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .dashboard-card p {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .dashboard-card small {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--secondary);
+            color: var(--secondary);
+        }
+
+        .tab:hover {
+            background-color: #f8f9fa;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Search Box */
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px 20px;
+            padding-left: 45px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        /* Table */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            background-color: #f8f9fa;
+        }
+
+        tr {
+            transition: var(--transition);
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background-color: var(--pending);
+            color: white;
+        }
+
+        .status-linked {
+            background-color: var(--linked);
+            color: white;
+        }
+
+        .status-offset {
+            background-color: var(--offset);
+            color: white;
+        }
+
+        .status-audit {
+            background-color: var(--audit);
+            color: white;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Lato', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        .btn-view {
+            background-color: #dfe6e9;
+            color: #636e72;
+        }
+
+        .btn-view:hover {
+            background-color: #b2bec3;
+        }
+
+        .btn-link {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-link:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-offset {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .btn-offset:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-import {
+            background-color: #9b59b6;
+            color: white;
+        }
+
+        .btn-import:hover {
+            background-color: #8e44ad;
+        }
+
+        .btn-download {
+            background-color: #34495e;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background-color: #2c3e50;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            transition: var(--transition);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 1200px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            animation: modalFade 0.3s;
+        }
+
+        @keyframes modalFade {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close:hover {
+            color: var(--dark);
+        }
+
+        .modal-body {
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Form Elements */
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        /* Filter Section */
+        .filter-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-label {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            background: white;
+            min-width: 180px;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            height: 300px;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--dark);
+            color: white;
+            margin-top: 40px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .table-responsive {
+                overflow-x: auto;
+            }
+            
+            th, td {
+                white-space: nowrap;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0 15px;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-section {
+                flex-direction: column;
+            }
+            
+            .filter-select {
+                width: 100%;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1;
+                text-align: center;
+                padding: 10px;
+            }
+        }
+    </style>
 <!-- DASHBOARD MAIN CONTENT -->
 <div class="home-section">
   <div class="text">Dashboard</div>
-    <!-- Summary Cards -->
-      <div class="summary-cards">
-        <div class="card">
-          <div class="card-title">Total Refunds</div>
-          <div class="card-value">1,242</div>
-          <div class="card-footer">₱12,420,000.00</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Processed Refunds</div>
-          <div class="card-value">1,187</div>
-          <div class="card-footer">
-            <span class="status-badge status-processed">95.6%</span>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">Pending Refunds</div>
-          <div class="card-value">47</div>
-          <div class="card-footer">
-            <span class="status-badge status-pending">3.8%</span>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">Error Refunds</div>
-          <div class="card-value">8</div>
-          <div class="card-footer">
-            <span class="status-badge status-error">0.6%</span>
-          </div>
-        </div>
-      </div>
+            <!-- Main Content -->
+        <div class="main-content" id="main-content">
 
-      <!-- Refund Actions -->
-      <div class="refund-actions">
-        <button id="processRefundsBtn" class="btn btn-primary">
-          <i class="fa fa-sync"></i> Process Refunds
-        </button>
-        <button id="exportReportBtn" class="btn btn-success">
-          <i class="fa fa-file-export"></i> Export Report
-        </button>
-        <button id="manualProcessBtn" class="btn btn-warning">
-          <i class="fa fa-hand-pointer"></i> Manual Process
-        </button>
-        <button id="approvalBtn" class="btn btn-info">
-          <i class="fa fa-check-circle"></i> Approval Workflow
-        </button>
-      </div>
+            <!-- Content Area -->
+            <div class="content">
+                <h1 class="page-title">Refund Offsets</h1>
 
-      <!-- Tabs -->
-      <div class="tabs">
-        <div class="tab active" data-tab="refunds">Refunds</div>
-        <div class="tab" data-tab="payments">Payments</div>
-        <div class="tab" data-tab="cashflow">Cash Flow</div>
-        <div class="tab" data-tab="approvals">Roles & Approvals</div>
-      </div>
-
-      <!-- Tab Content -->
-      <div class="tab-content active" id="refunds-tab">
-        <div class="container-fluid" style="padding: 20px">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="card">
-                <div class="card-header">
-                  <h4>Refunds</h4>
-                </div>
-                <div class="card-body">
-                  <!-- Filter Section -->
-                  <div class="filter-section mb-4">
-                    <div class="row">
-                      <div class="col">
-                        <label for="filterRefundStatus">Status</label>
-                        <select id="filterRefundStatus" class="form-control">
-                          <option value="">All Statuses</option>
-                          <option value="processed">Processed</option>
-                          <option value="pending">Pending</option>
-                          <option value="error">Error</option>
-                        </select>
-                      </div>
-                      <div class="col">
-                        <label for="filterRefundDate">Date Range</label>
-                        <input type="date" id="filterRefundDate" class="form-control">
-                      </div>
-                      <div class="col">
-                        <label>&nbsp;</label>
-                        <button id="applyRefundFilters" class="btn btn-success form-control">
-                          <i class="fa fa-filter"></i> Apply Filters
-                        </button>
-                      </div>
+                <!-- Dashboard Cards -->
+                <div class="dashboard-cards">
+                    <div class="dashboard-card">
+                        <div class="card-icon pending">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3>Pending Refunds</h3>
+                        <p>₱124,500</p>
+                        <small>12 refunds awaiting action</small>
                     </div>
-                  </div>
-
-                  <!-- Refunds Table -->
-                  <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover" id="refundsTable">
-                      <thead>
-                        <tr>
-                          <th>Refund ID</th>
-                          <th>Payment ID</th>
-                          <th>Order ID</th>
-                          <th>Refund Amount</th>
-                          <th>Refund Date</th>
-                          <th>Status</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- Data will be populated by JavaScript -->
-                      </tbody>
-                    </table>
-                  </div>
+                    <div class="dashboard-card">
+                        <div class="card-icon linked">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <h3>Linked Refunds</h3>
+                        <p>₱89,300</p>
+                        <small>8 refunds linked to collections</small>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-icon offset">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <h3>Offset Amount</h3>
+                        <p>₱67,800</p>
+                        <small>Net revenue after offsets</small>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-icon audit">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h3>Audit Entries</h3>
+                        <p>42</p>
+                        <small>Refund adjustments this month</small>
+                    </div>
                 </div>
-              </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tab active" data-tab="dashboard">Dashboard</div>
+                    <div class="tab" data-tab="linking">Refund Linking</div>
+                    <div class="tab" data-tab="adjustment">Adjustment Report</div>
+                    <div class="tab" data-tab="audit">Audit Trail</div>
+                </div>
+
+                <!-- Dashboard Tab -->
+                <div class="tab-content active" id="dashboard-tab">
+                    <!-- Pending vs Collected Chart -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Pending Refunds vs Collected Amounts</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <!-- Chart would be implemented with a library like Chart.js in a real application -->
+                                <div style="display: flex; align-items: flex-end; height: 100%; gap: 20px; justify-content: center;">
+                                    <div style="display: flex; flex-direction: column; align-items: center;">
+                                        <div style="background: #f39c12; width: 60px; height: 180px; border-radius: 5px;"></div>
+                                        <span style="margin-top: 10px;">Pending Refunds</span>
+                                        <span>₱124,500</span>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center;">
+                                        <div style="background: #3498db; width: 60px; height: 220px; border-radius: 5px;"></div>
+                                        <span style="margin-top: 10px;">Collected Amounts</span>
+                                        <span>₱156,800</span>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center;">
+                                        <div style="background: #2ecc71; width: 60px; height: 150px; border-radius: 5px;"></div>
+                                        <span style="margin-top: 10px;">Net Revenue</span>
+                                        <span>₱67,800</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Refund Activity -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Recent Refund Activity</h2>
+                            <div>
+                                <button class="btn btn-import"><i class="fas fa-file-import"></i> Import Refunds</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="refundSearch" placeholder="Search Refund ID, Customer, or Amount...">
+                                <button class="btn btn-primary">Search</button>
+                            </div>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Refund ID</th>
+                                            <th>Customer</th>
+                                            <th>Original Payment</th>
+                                            <th>Refund Amount</th>
+                                            <th>Status</th>
+                                            <th>Date Requested</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>REF-2025-001</td>
+                                            <td>John Smith</td>
+                                            <td>PYM-2025-085</td>
+                                            <td>₱12,500.00</td>
+                                            <td><span class="status status-pending">Pending</span></td>
+                                            <td>2025-09-01</td>
+                                            <td>
+                                                <button class="btn btn-view btn-sm" onclick="openModal('viewModal')"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-link btn-sm"><i class="fas fa-link"></i></button>
+                                                <button class="btn btn-offset btn-sm"><i class="fas fa-balance-scale"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>REF-2025-002</td>
+                                            <td>Maria Garcia</td>
+                                            <td>PYM-2025-086</td>
+                                            <td>₱8,750.00</td>
+                                            <td><span class="status status-linked">Linked</span></td>
+                                            <td>2025-09-02</td>
+                                            <td>
+                                                <button class="btn btn-view btn-sm" onclick="openModal('viewModal')"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-offset btn-sm"><i class="fas fa-balance-scale"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>REF-2025-003</td>
+                                            <td>Robert Johnson</td>
+                                            <td>PYM-2025-087</td>
+                                            <td>₱15,200.00</td>
+                                            <td><span class="status status-offset">Offset</span></td>
+                                            <td>2025-09-03</td>
+                                            <td>
+                                                <button class="btn btn-view btn-sm" onclick="openModal('viewModal')"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-download btn-sm"><i class="fas fa-file-alt"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>REF-2025-004</td>
+                                            <td>Sarah Williams</td>
+                                            <td>PYM-2025-088</td>
+                                            <td>₱9,800.00</td>
+                                            <td><span class="status status-pending">Pending</span></td>
+                                            <td>2025-09-04</td>
+                                            <td>
+                                                <button class="btn btn-view btn-sm" onclick="openModal('viewModal')"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-link btn-sm"><i class="fas fa-link"></i></button>
+                                                <button class="btn btn-offset btn-sm"><i class="fas fa-balance-scale"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>REF-2025-005</td>
+                                            <td>Michael Brown</td>
+                                            <td>PYM-2025-089</td>
+                                            <td>₱22,500.00</td>
+                                            <td><span class="status status-linked">Linked</span></td>
+                                            <td>2025-09-05</td>
+                                            <td>
+                                                <button class="btn btn-view btn-sm" onclick="openModal('viewModal')"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-offset btn-sm"><i class="fas fa-balance-scale"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Refund Linking Tab -->
+                <div class="tab-content" id="linking-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Refund Source Linking</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="filter-section">
+                                <div class="filter-item">
+                                    <span class="filter-label">Refund Status</span>
+                                    <select class="filter-select" id="statusFilter">
+                                        <option value="">All Status</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="linked">Linked</option>
+                                        <option value="offset">Offset</option>
+                                    </select>
+                                </div>
+                                <div class="filter-item">
+                                    <span class="filter-label">Customer</span>
+                                    <select class="filter-select" id="customerFilter">
+                                        <option value="">All Customers</option>
+                                        <option value="john">John Smith</option>
+                                        <option value="maria">Maria Garcia</option>
+                                        <option value="robert">Robert Johnson</option>
+                                        <option value="sarah">Sarah Williams</option>
+                                        <option value="michael">Michael Brown</option>
+                                    </select>
+                                </div>
+                                <div class="filter-item">
+                                    <span class="filter-label">Date Range</span>
+                                    <input type="date" class="filter-select" id="dateFrom">
+                                </div>
+                                <div class="filter-item">
+                                    <span class="filter-label">To</span>
+                                    <input type="date" class="filter-select" id="dateTo">
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Refund ID</th>
+                                            <th>Customer</th>
+                                            <th>Original Payment</th>
+                                            <th>Payment Date</th>
+                                            <th>Refund Amount</th>
+                                            <th>Status</th>
+                                            <th>Link to Collection</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>REF-2025-001</td>
+                                            <td>John Smith</td>
+                                            <td>PYM-2025-085</td>
+                                            <td>2025-08-15</td>
+                                            <td>₱12,500.00</td>
+                                            <td><span class="status status-pending">Pending</span></td>
+                                            <td>
+                                                <button class="btn btn-link btn-sm" onclick="openModal('linkModal')"><i class="fas fa-link"></i> Link</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>REF-2025-004</td>
+                                            <td>Sarah Williams</td>
+                                            <td>PYM-2025-088</td>
+                                            <td>2025-08-18</td>
+                                            <td>₱9,800.00</td>
+                                            <td><span class="status status-pending">Pending</span></td>
+                                            <td>
+                                                <button class="btn btn-link btn-sm" onclick="openModal('linkModal')"><i class="fas fa-link"></i> Link</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>REF-2025-006</td>
+                                            <td>Lisa Anderson</td>
+                                            <td>PYM-2025-090</td>
+                                            <td>2025-08-20</td>
+                                            <td>₱7,200.00</td>
+                                            <td><span class="status status-pending">Pending</span></td>
+                                            <td>
+                                                <button class="btn btn-link btn-sm" onclick="openModal('linkModal')"><i class="fas fa-link"></i> Link</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adjustment Report Tab -->
+                <div class="tab-content" id="adjustment-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Adjustment Report - Net Revenue After Refunds</h2>
+                            <div>
+                                <button class="btn btn-download"><i class="fas fa-download"></i> Export</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="filter-section">
+                                <div class="filter-item">
+                                    <span class="filter-label">Period</span>
+                                    <select class="filter-select" id="periodFilter">
+                                        <option value="current">Current Month</option>
+                                        <option value="previous">Previous Month</option>
+                                        <option value="quarter">This Quarter</option>
+                                        <option value="year">This Year</option>
+                                        <option value="custom">Custom Range</option>
+                                    </select>
+                                </div>
+                                <div class="filter-item">
+                                    <span class="filter-label">From</span>
+                                    <input type="date" class="filter-select" value="2025-09-01">
+                                </div>
+                                <div class="filter-item">
+                                    <span class="filter-label">To</span>
+                                    <input type="date" class="filter-select" value="2025-09-30">
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Period</th>
+                                            <th>Gross Revenue</th>
+                                            <th>Refund Amount</th>
+                                            <th>Net Revenue</th>
+                                            <th>Refund %</th>
+                                            <th>Offset Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>September 2025</td>
+                                            <td>₱856,300.00</td>
+                                            <td>₱124,500.00</td>
+                                            <td>₱731,800.00</td>
+                                            <td>14.5%</td>
+                                            <td><span class="status status-offset">Offset Applied</span></td>
+                                            <td>
+                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-download btn-sm"><i class="fas fa-download"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>August 2025</td>
+                                            <td>₱792,150.00</td>
+                                            <td>₱98,700.00</td>
+                                            <td>₱693,450.00</td>
+                                            <td>12.5%</td>
+                                            <td><span class="status status-offset">Offset Applied</span></td>
+                                            <td>
+                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-download btn-sm"><i class="fas fa-download"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>July 2025</td>
+                                            <td>₱745,800.00</td>
+                                            <td>₱87,300.00</td>
+                                            <td>₱658,500.00</td>
+                                            <td>11.7%</td>
+                                            <td><span class="status status-offset">Offset Applied</span></td>
+                                            <td>
+                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-download btn-sm"><i class="fas fa-download"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>June 2025</td>
+                                            <td>₱812,450.00</td>
+                                            <td>₱105,200.00</td>
+                                            <td>₱707,250.00</td>
+                                            <td>12.9%</td>
+                                            <td><span class="status status-offset">Offset Applied</span></td>
+                                            <td>
+                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-download btn-sm"><i class="fas fa-download"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audit Trail Tab -->
+                <div class="tab-content" id="audit-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Audit Trail of Refunds</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="filter-section">
+                                <div class="filter-item">
+                                    <span class="filter-label">Refund Type</span>
+                                    <select class="filter-select" id="typeFilter">
+                                        <option value="">All Types</option>
+                                        <option value="full">Full Refund</option>
+                                        <option value="partial">Partial Refund</option>
+                                        <option value="exchange">Exchange</option>
+                                    </select>
+                                </div>
+                                <div class="filter-item">
+                                    <span class="filter-label">Approver</span>
+                                    <select class="filter-select" id="approverFilter">
+                                        <option value="">All Approvers</option>
+                                        <option value="manager">Manager</option>
+                                        <option value="supervisor">Supervisor</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                </div>
+                                <div class="filter-item">
+                                    <span class="filter-label">Reason Code</span>
+                                    <select class="filter-select" id="reasonFilter">
+                                        <option value="">All Reasons</option>
+                                        <option value="defective">Defective Product</option>
+                                        <option value="wrong">Wrong Item</option>
+                                        <option value="cancel">Order Cancellation</option>
+                                        <option value="return">Customer Return</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Refund ID</th>
+                                            <th>Customer</th>
+                                            <th>Refund Type</th>
+                                            <th>Amount</th>
+                                            <th>Reason Code</th>
+                                            <th>Approver</th>
+                                            <th>Date Processed</th>
+                                            <th>GL Entry</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>REF-2025-003</td>
+                                            <td>Robert Johnson</td>
+                                            <td>Full Refund</td>
+                                            <td>₱15,200.00</td>
+                                            <td>Defective Product</td>
+                                            <td>Manager</td>
+                                            <td>2025-09-05</td>
+                                            <td>GL-2025-0098</td>
+                                            <td>
+                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>REF-2025-002</td>
+                                            <td>Maria Garcia</td>
+                                            <td>Partial Refund</td>
+                                            <td>₱8,750.00</td>
+                                            <td>Wrong Item</td>
+                                            <td>Supervisor</td>
+                                            <td>2025-09-04</td>
+                                            <td>GL-2025-0087</td>
+                                            <td>
+                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>REF-2025-005</td>
+                                            <td>Michael Brown</td>
+                                            <td>Exchange</td>
+                                            <td>₱22,500.00</td>
+                                            <td>Order Cancellation</td>
+                                            <td>Admin</td>
+                                            <td>2025-09-03</td>
+                                            <td>GL-2025-0076</td>
+                                            <td>
+                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>REF-2025-001</td>
+                                            <td>John Smith</td>
+                                            <td>Full Refund</td>
+                                            <td>₱12,500.00</td>
+                                            <td>Customer Return</td>
+                                            <td>Manager</td>
+                                            <td>2025-09-02</td>
+                                            <td>GL-2025-0065</td>
+                                            <td>
+                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="tab-content" id="payments-tab">
-        <div class="container-fluid" style="padding: 20px">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="card">
-                <div class="card-header">
-                  <h4>Payments</h4>
-                </div>
-                <div class="card-body">
-                  <!-- Filter Section -->
-                  <div class="filter-section mb-4">
-                    <div class="row">
-                      <div class="col">
-                        <label for="filterPaymentMethod">Payment Method</label>
-                        <select id="filterPaymentMethod" class="form-control">
-                          <option value="">All Methods</option>
-                          <option value="gateway">Gateway</option>
-                          <option value="cod">COD</option>
-                          <option value="wallet">Wallet</option>
-                        </select>
-                      </div>
-                      <div class="col">
-                        <label for="filterPaymentStatus">Status</label>
-                        <select id="filterPaymentStatus" class="form-control">
-                          <option value="">All Statuses</option>
-                          <option value="pending">Pending</option>
-                          <option value="received">Received</option>
-                          <option value="unsettled">Unsettled</option>
-                          <option value="refunded">Refunded</option>
-                        </select>
-                      </div>
-                      <div class="col">
-                        <label for="filterPaymentDate">Date Range</label>
-                        <input type="date" id="filterPaymentDate" class="form-control">
-                      </div>
-                      <div class="col">
-                        <label>&nbsp;</label>
-                        <button id="applyPaymentFilters" class="btn btn-success form-control">
-                          <i class="fa fa-filter"></i> Apply Filters
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Payments Table -->
-                  <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover" id="paymentsTable">
-                      <thead>
-                        <tr>
-                          <th>Payment ID</th>
-                          <th>Customer ID</th>
-                          <th>Order ID</th>
-                          <th>Payment Method</th>
-                          <th>Amount</th>
-                          <th>Status</th>
-                          <th>Created At</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- Data will be populated by JavaScript -->
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+            <!-- Footer -->
+            <div class="footer">
+                <p>&copy; 2025 Financial System - Refund Offsets</p>
             </div>
-          </div>
         </div>
-      </div>
+    </div>
 
-      <div class="tab-content" id="cashflow-tab">
-        <div class="container-fluid" style="padding: 20px">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="card">
-                <div class="card-header">
-                  <h4>Cash Flow</h4>
-                </div>
-                <div class="card-body">
-                  <!-- Filter Section -->
-                  <div class="filter-section mb-4">
-                    <div class="row">
-                      <div class="col">
-                        <label for="filterCashFlowType">Type</label>
-                        <select id="filterCashFlowType" class="form-control">
-                          <option value="">All Types</option>
-                          <option value="inflow">Inflow</option>
-                          <option value="outflow">Outflow</option>
-                        </select>
-                      </div>
-                      <div class="col">
-                        <label for="filterCashFlowDate">Date Range</label>
-                        <input type="date" id="filterCashFlowDate" class="form-control">
-                      </div>
-                      <div class="col">
-                        <label>&nbsp;</label>
-                        <button id="applyCashFlowFilters" class="btn btn-success form-control">
-                          <i class="fa fa-filter"></i> Apply Filters
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Cash Flow Table -->
-                  <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover" id="cashFlowTable">
-                      <thead>
-                        <tr>
-                          <th>Entry ID</th>
-                          <th>Type</th>
-                          <th>Description</th>
-                          <th>Amount</th>
-                          <th>Date</th>
-                          <th>Related Refund</th>
-                          <th>Status</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- Data will be populated by JavaScript -->
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+    <!-- View Modal -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Refund Offset Details</h2>
+                <span class="close" onclick="closeModal('viewModal')">&times;</span>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="tab-content" id="approvals-tab">
-        <div class="container-fluid" style="padding: 20px">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="approval-section">
-                <h3>Roles & Approval Management</h3>
-                
-                <div class="filter-section mb-4">
-                  <div class="row">
-                    <div class="col">
-                      <label for="filterRole">Role</label>
-                      <select id="filterRole" class="form-control">
-                        <option value="">All Roles</option>
-                        <option value="AR Manager">AR Manager</option>
-                        <option value="GL Accountant">GL Accountant</option>
-                        <option value="Expense Auditor">Expense Auditor</option>
-                        <option value="Financial Director">Financial Director</option>
-                      </select>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">Customer</label>
+                            <p>John Smith</p>
+                        </div>
                     </div>
-                    <div class="col">
-                      <label for="filterApprovalDate">Date Range</label>
-                      <input type="date" id="filterApprovalDate" class="form-control">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">Refund ID</label>
+                            <p>REF-2025-001</p>
+                        </div>
                     </div>
-                    <div class="col">
-                      <label>&nbsp;</label>
-                      <button id="applyApprovalFilters" class="btn btn-success form-control">
-                        <i class="fa fa-filter"></i> Apply Filters
-                      </button>
-                    </div>
-                    <div class="col">
-                      <label>&nbsp;</label>
-                      <button id="addRoleBtn" class="btn btn-primary form-control">
-                        <i class="fa fa-plus"></i> Add Role
-                      </button>
-                    </div>
-                  </div>
                 </div>
-                
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">Original Payment</label>
+                            <p>PYM-2025-085</p>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">Payment Date</label>
+                            <p>2025-08-15</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">Refund Amount</label>
+                            <p>₱12,500.00</p>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">Refund Status</label>
+                            <p><span class="status status-pending">Pending</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="form-label">Refund Offset Details</h3>
                 <div class="table-responsive">
-                  <table class="approval-table table-striped table-hover">
-                    <thead>
-                      <tr>
-                        <th>Role ID</th>
-                        <th>Role Name</th>
-                        <th>User ID</th>
-                        <th>Approval Rights</th>
-                        <th>Last Action Date</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody id="approvalsTableBody">
-                      <!-- Data will be populated by JavaScript -->
-                    </tbody>
-                  </table>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Original Revenue</th>
+                                <th>Refund Amount</th>
+                                <th>Net Revenue</th>
+                                <th>Offset Status</th>
+                                <th>GL Account</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Product Sale - Laptop</td>
+                                <td>₱25,000.00</td>
+                                <td>₱12,500.00</td>
+                                <td>₱12,500.00</td>
+                                <td><span class="status status-pending">Pending</span></td>
+                                <td>Revenue - Electronics</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-              </div>
+
+                <div class="form-group">
+                    <label class="form-label">Offset Summary</label>
+                    <div style="padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                        <p><strong>Status:</strong> <span class="status status-pending">Pending Offset</span></p>
+                        <p><strong>Action Required:</strong> Link refund to original collection and apply offset</p>
+                        <p><strong>GL Impact:</strong> Debit: Refunds Expense, Credit: Revenue Adjustments</p>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('viewModal')">Close</button>
+                <button type="button" class="btn btn-primary">Print Report</button>
+            </div>
         </div>
-      </div>
     </div>
 
-    <!-- Manual Process Modal -->
-    <div id="manualProcessModal" class="modal-overlay">
-      <div class="modal-box">
-        <h3>Manual Process Refund</h3>
-        <form id="manualProcessForm">
-          <div class="form-group mb-3">
-            <label for="refundSelect">Refund Record</label>
-            <select class="form-control" id="refundSelect" required>
-              <option value="">Select Refund</option>
-              <!-- Options will be populated by JavaScript -->
-            </select>
-          </div>
-          <div class="form-group mb-3">
-            <label for="paymentSelect">Related Payment</label>
-            <select class="form-control" id="paymentSelect" required>
-              <option value="">Select Payment</option>
-              <!-- Options will be populated by JavaScript -->
-            </select>
-          </div>
-          <div class="form-group mb-3">
-            <label for="cashFlowSelect">Cash Flow Entry</label>
-            <select class="form-control" id="cashFlowSelect" required>
-              <option value="">Select Cash Flow Entry</option>
-              <!-- Options will be populated by JavaScript -->
-            </select>
-          </div>
-          <div class="modal-actions">
-            <button type="submit" class="btn-yes">
-              <i class="fas fa-link"></i> Process Refund
-            </button>
-            <button type="button" id="cancelManualProcess" class="btn-no">
-              <i class="fas fa-times"></i> Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Add Role Modal -->
-    <div id="addRoleModal" class="modal-overlay">
-      <div class="modal-box">
-        <h3>Add Role & Approval</h3>
-        <form id="addRoleForm">
-          <div class="form-group mb-3">
-            <label for="roleName">Role Name</label>
-            <select class="form-control" id="roleName" required>
-              <option value="">Select Role</option>
-              <option value="AR Manager">AR Manager</option>
-              <option value="GL Accountant">GL Accountant</option>
-              <option value="Expense Auditor">Expense Auditor</option>
-              <option value="Financial Director">Financial Director</option>
-            </select>
-          </div>
-          <div class="form-group mb-3">
-            <label for="userId">User ID</label>
-            <input type="text" class="form-control" id="userId" required placeholder="Enter User ID">
-          </div>
-          <div class="form-group mb-3">
-            <label for="approvalRights">Approval Rights</label>
-            <select class="form-control" id="approvalRights" required>
-              <option value="">Select Rights</option>
-              <option value="view">View Only</option>
-              <option value="approve">Approve</option>
-              <option value="edit">Edit & Approve</option>
-            </select>
-          </div>
-          <div class="modal-actions">
-            <button type="submit" class="btn-yes">
-              <i class="fas fa-plus"></i> Add Role
-            </button>
-            <button type="button" id="cancelAddRole" class="btn-no">
-              <i class="fas fa-times"></i> Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="modal-overlay">
-      <div class="modal-box">
-        <h3>Confirm Delete</h3>
-        <p>Are you sure you want to delete this role?</p>
-        <div class="modal-actions">
-          <button id="confirmDelete" class="btn-yes">
-            <i class="fas fa-trash"></i> Delete
-          </button>
-          <button id="cancelDelete" class="btn-no">
-            <i class="fas fa-times"></i> Cancel
-          </button>
+    <!-- Link Modal -->
+    <div id="linkModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Link Refund to Original Collection</h2>
+                <span class="close" onclick="closeModal('linkModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Refund ID</label>
+                    <p>REF-2025-001</p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Customer</label>
+                    <p>John Smith</p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Refund Amount</label>
+                    <p>₱12,500.00</p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="collectionSelect">Select Original Collection</label>
+                    <select class="form-control" id="collectionSelect">
+                        <option value="">Select a collection</option>
+                        <option value="PYM-2025-085">PYM-2025-085 (₱25,000.00 - 2025-08-15)</option>
+                        <option value="PYM-2025-086">PYM-2025-086 (₱18,750.00 - 2025-08-16)</option>
+                        <option value="PYM-2025-087">PYM-2025-087 (₱32,200.00 - 2025-08-17)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="offsetAmount">Offset Amount</label>
+                    <input type="number" class="form-control" id="offsetAmount" value="12500" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reasonCode">Reason Code</label>
+                    <select class="form-control" id="reasonCode">
+                        <option value="">Select a reason</option>
+                        <option value="defective">Defective Product</option>
+                        <option value="wrong">Wrong Item</option>
+                        <option value="cancel">Order Cancellation</option>
+                        <option value="return">Customer Return</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="approver">Approver</label>
+                    <select class="form-control" id="approver">
+                        <option value="">Select an approver</option>
+                        <option value="manager">Manager</option>
+                        <option value="supervisor">Supervisor</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('linkModal')">Cancel</button>
+                <button type="button" class="btn btn-primary">Link and Apply Offset</button>
+            </div>
         </div>
-      </div>
     </div>
 
 </div>
 
 <script src="../PANEL/ASSETS/js/script-p.js"></script>
-<script>
-  // Sample data for refunds
-      let refunds = [
-        {
-          refund_id: 601,
-          payment_id: 1001,
-          order_id: 50123,
-          refund_amount: 2500.00,
-          refund_date: "2025-08-16",
-          status: "processed"
-        },
-        {
-          refund_id: 602,
-          payment_id: 1002,
-          order_id: 50245,
-          refund_amount: 5200.50,
-          refund_date: "2025-08-23",
-          status: "processed"
-        },
-        {
-          refund_id: 603,
-          payment_id: 1003,
-          order_id: 50312,
-          refund_amount: 1800.00,
-          refund_date: "2025-08-31",
-          status: "pending"
-        },
-        {
-          refund_id: 604,
-          payment_id: 1004,
-          order_id: 50456,
-          refund_amount: 3200.00,
-          refund_date: "2025-09-02",
-          status: "error"
-        },
-        {
-          refund_id: 605,
-          payment_id: 1005,
-          order_id: 50567,
-          refund_amount: 1750.25,
-          refund_date: "2025-09-03",
-          status: "pending"
-        }
-      ];
+    <script>
 
-      // Sample data for payments (reusing from previous systems)
-      let payments = [
-        {
-          payment_id: 1001,
-          customer_id: 20015,
-          order_id: 50123,
-          payment_method: "gateway",
-          amount: 2500.00,
-          status: "refunded",
-          created_at: "2025-08-15"
-        },
-        {
-          payment_id: 1002,
-          customer_id: 20032,
-          order_id: 50245,
-          payment_method: "gateway",
-          amount: 5200.50,
-          status: "refunded",
-          created_at: "2025-08-22"
-        },
-        {
-          payment_id: 1003,
-          customer_id: 20045,
-          order_id: 50312,
-          payment_method: "gateway",
-          amount: 1850.75,
-          status: "unsettled",
-          created_at: "2025-08-30"
-        },
-        {
-          payment_id: 1004,
-          customer_id: 20067,
-          order_id: 50456,
-          payment_method: "cod",
-          amount: 3200.00,
-          status: "pending",
-          created_at: "2025-09-01"
-        },
-        {
-          payment_id: 1005,
-          customer_id: 20089,
-          order_id: 50567,
-          payment_method: "gateway",
-          amount: 1750.25,
-          status: "received",
-          created_at: "2025-09-02"
-        }
-      ];
-
-      // Sample data for cash flow entries
-      let cashFlow = [
-        {
-          entry_id: 701,
-          type: "outflow",
-          description: "Refund for order #50123",
-          amount: 2500.00,
-          date: "2025-08-16",
-          related_refund: 601,
-          status: "processed"
-        },
-        {
-          entry_id: 702,
-          type: "outflow",
-          description: "Refund for order #50245",
-          amount: 5200.50,
-          date: "2025-08-23",
-          related_refund: 602,
-          status: "processed"
-        },
-        {
-          entry_id: 703,
-          type: "outflow",
-          description: "Refund for order #50312",
-          amount: 1800.00,
-          date: "2025-08-31",
-          related_refund: 603,
-          status: "pending"
-        },
-        {
-          entry_id: 704,
-          type: "outflow",
-          description: "Refund for order #50456",
-          amount: 3200.00,
-          date: "2025-09-02",
-          related_refund: 604,
-          status: "error"
-        }
-      ];
-
-      // Sample data for roles and approvals
-      let rolesApprovals = [
-        {
-          role_id: 1,
-          role_name: "AR Manager",
-          user_id: "U4001",
-          approval_rights: "edit",
-          last_action_date: "2025-09-01"
-        },
-        {
-          role_id: 2,
-          role_name: "GL Accountant",
-          user_id: "U4002",
-          approval_rights: "approve",
-          last_action_date: "2025-08-30"
-        },
-        {
-          role_id: 3,
-          role_name: "Expense Auditor",
-          user_id: "U4003",
-          approval_rights: "view",
-          last_action_date: "2025-08-28"
-        },
-        {
-          role_id: 4,
-          role_name: "Financial Director",
-          user_id: "U4004",
-          approval_rights: "edit",
-          last_action_date: "2025-08-25"
-        }
-      ];
-
-      // DOM Elements
-      const refundsTable = document.getElementById("refundsTable");
-      const paymentsTable = document.getElementById("paymentsTable");
-      const cashFlowTable = document.getElementById("cashFlowTable");
-      const approvalsTableBody = document.getElementById("approvalsTableBody");
-      const manualProcessModal = document.getElementById("manualProcessModal");
-      const addRoleModal = document.getElementById("addRoleModal");
-      const deleteModal = document.getElementById("deleteModal");
-      const manualProcessForm = document.getElementById("manualProcessForm");
-      const addRoleForm = document.getElementById("addRoleForm");
-      const cancelManualProcess = document.getElementById("cancelManualProcess");
-      const cancelAddRole = document.getElementById("cancelAddRole");
-      const cancelDelete = document.getElementById("cancelDelete");
-      
-      // Current item being edited
-      let currentRoleId = null;
-
-      // Tab functionality
-      document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-          // Remove active class from all tabs and content
-          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-          
-          // Add active class to clicked tab
-          tab.classList.add('active');
-          
-          // Show corresponding content
-          const tabName = tab.getAttribute('data-tab');
-          document.getElementById(`${tabName}-tab`).classList.add('active');
-        });
-      });
-
-      // Initialize the page
-      document.addEventListener("DOMContentLoaded", function () {
-        renderRefunds(refunds);
-        renderPayments(payments);
-        renderCashFlow(cashFlow);
-        renderApprovals(rolesApprovals);
-        populateManualProcessSelects();
-      });
-
-      // Render refunds in the table
-      function renderRefunds(refundsData) {
-        const tbody = refundsTable.querySelector("tbody");
-        tbody.innerHTML = "";
-
-        if (refundsData.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7" class="text-center">No refunds found</td></tr>';
-          return;
-        }
-
-        refundsData.forEach(refund => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${refund.refund_id}</td>
-            <td>${refund.payment_id}</td>
-            <td>${refund.order_id}</td>
-            <td>₱${refund.refund_amount.toFixed(2)}</td>
-            <td>${refund.refund_date}</td>
-            <td>${formatRefundStatus(refund.status)}</td>
-            <td>
-              <div class="approval-actions">
-                <button class="btn btn-sm btn-primary view-btn" data-type="refund" data-id="${refund.refund_id}">
-                  <i class="fas fa-eye"></i>
-                </button>
-              </div>
-            </td>
-          `;
-          tbody.appendChild(row);
-        });
-        
-        // Add event listeners to view buttons
-        document.querySelectorAll('.view-btn[data-type="refund"]').forEach(btn => {
-          btn.addEventListener("click", () => viewRefundDetails(btn.dataset.id));
-        });
-      }
-
-      // Render payments in the table
-      function renderPayments(paymentsData) {
-        const tbody = paymentsTable.querySelector("tbody");
-        tbody.innerHTML = "";
-
-        if (paymentsData.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" class="text-center">No payments found</td></tr>';
-          return;
-        }
-
-        paymentsData.forEach(payment => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${payment.payment_id}</td>
-            <td>${payment.customer_id}</td>
-            <td>${payment.order_id}</td>
-            <td>${formatPaymentMethod(payment.payment_method)}</td>
-            <td>₱${payment.amount.toFixed(2)}</td>
-            <td>${formatPaymentStatus(payment.status)}</td>
-            <td>${payment.created_at}</td>
-            <td>
-              <div class="approval-actions">
-                <button class="btn btn-sm btn-primary view-btn" data-type="payment" data-id="${payment.payment_id}">
-                  <i class="fas fa-eye"></i>
-                </button>
-              </div>
-            </td>
-          `;
-          tbody.appendChild(row);
-        });
-        
-        // Add event listeners to view buttons
-        document.querySelectorAll('.view-btn[data-type="payment"]').forEach(btn => {
-          btn.addEventListener("click", () => viewPaymentDetails(btn.dataset.id));
-        });
-      }
-
-      // Render cash flow entries in the table
-      function renderCashFlow(cashFlowData) {
-        const tbody = cashFlowTable.querySelector("tbody");
-        tbody.innerHTML = "";
-
-        if (cashFlowData.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" class="text-center">No cash flow entries found</td></tr>';
-          return;
-        }
-
-        cashFlowData.forEach(entry => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${entry.entry_id}</td>
-            <td>${formatCashFlowType(entry.type)}</td>
-            <td>${entry.description}</td>
-            <td>₱${entry.amount.toFixed(2)}</td>
-            <td>${entry.date}</td>
-            <td>${entry.related_refund || 'N/A'}</td>
-            <td>${formatCashFlowStatus(entry.status)}</td>
-            <td>
-              <div class="approval-actions">
-                <button class="btn btn-sm btn-primary view-btn" data-type="cashflow" data-id="${entry.entry_id}">
-                  <i class="fas fa-eye"></i>
-                </button>
-              </div>
-            </td>
-          `;
-          tbody.appendChild(row);
-        });
-        
-        // Add event listeners to view buttons
-        document.querySelectorAll('.view-btn[data-type="cashflow"]').forEach(btn => {
-          btn.addEventListener("click", () => viewCashFlowDetails(btn.dataset.id));
-        });
-      }
-
-      // Render roles and approvals
-      function renderApprovals(approvalsData) {
-        approvalsTableBody.innerHTML = "";
-
-        if (approvalsData.length === 0) {
-          approvalsTableBody.innerHTML = '<tr><td colspan="6" class="text-center">No roles found</td></tr>';
-          return;
-        }
-
-        approvalsData.forEach(role => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${role.role_id}</td>
-            <td>${role.role_name}</td>
-            <td>${role.user_id}</td>
-            <td>${formatApprovalRights(role.approval_rights)}</td>
-            <td>${role.last_action_date}</td>
-            <td>
-              <div class="approval-actions">
-                <button class="btn btn-sm btn-primary edit-role-btn" data-id="${role.role_id}">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="btn btn-sm btn-danger delete-role-btn" data-id="${role.role_id}">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-            </td>
-          `;
-          approvalsTableBody.appendChild(row);
+        // Tab functionality
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Hide all tab content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Show the selected tab content
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+            });
         });
 
-        // Add event listeners to edit and delete buttons
-        document.querySelectorAll('.edit-role-btn').forEach(btn => {
-          btn.addEventListener("click", () => editRole(btn.dataset.id));
+        // Modal functionality
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal when clicking outside of it
+        window.addEventListener('click', function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
         });
 
-        document.querySelectorAll('.delete-role-btn').forEach(btn => {
-          btn.addEventListener("click", () => confirmDelete(btn.dataset.id));
-        });
-      }
-
-      // Format refund status for display
-      function formatRefundStatus(status) {
-        switch (status) {
-          case "processed":
-            return `<span class="status-badge status-processed">Processed</span>`;
-          case "pending":
-            return `<span class="status-badge status-pending">Pending</span>`;
-          case "error":
-            return `<span class="status-badge status-error">Error</span>`;
-          default:
-            return status;
-        }
-      }
-
-      // Format payment method for display
-      function formatPaymentMethod(method) {
-        switch (method) {
-          case "gateway":
-            return "Payment Gateway";
-          case "cod":
-            return "Cash on Delivery";
-          case "wallet":
-            return "E-Wallet";
-          default:
-            return method;
-        }
-      }
-
-      // Format payment status for display
-      function formatPaymentStatus(status) {
-        switch (status) {
-          case "pending":
-            return `<span class="status-badge status-pending">Pending</span>`;
-          case "received":
-            return `<span class="status-badge status-processed">Received</span>`;
-          case "unsettled":
-            return `<span class="status-badge status-error">Unsettled</span>`;
-          case "refunded":
-            return `<span class="status-badge status-processed">Refunded</span>`;
-          default:
-            return status;
-        }
-      }
-
-      // Format cash flow type for display
-      function formatCashFlowType(type) {
-        switch (type) {
-          case "inflow":
-            return "Inflow";
-          case "outflow":
-            return "Outflow";
-          default:
-            return type;
-        }
-      }
-
-      // Format cash flow status for display
-      function formatCashFlowStatus(status) {
-        switch (status) {
-          case "processed":
-            return `<span class="status-badge status-processed">Processed</span>`;
-          case "pending":
-            return `<span class="status-badge status-pending">Pending</span>`;
-          case "error":
-            return `<span class="status-badge status-error">Error</span>`;
-          default:
-            return status;
-        }
-      }
-
-      // Format approval rights for display
-      function formatApprovalRights(rights) {
-        switch (rights) {
-          case "view":
-            return "View Only";
-          case "approve":
-            return "Approve";
-          case "edit":
-            return "Edit & Approve";
-          default:
-            return rights;
-        }
-      }
-
-      // View details functions
-      function viewRefundDetails(id) {
-        const refund = refunds.find(r => r.refund_id == id);
-        if (refund) {
-          alert(`Refund Details:\nID: ${refund.refund_id}\nPayment: ${refund.payment_id}\nOrder: ${refund.order_id}\nAmount: ₱${refund.refund_amount.toFixed(2)}\nDate: ${refund.refund_date}\nStatus: ${refund.status}`);
-        }
-      }
-
-      function viewPaymentDetails(id) {
-        const payment = payments.find(p => p.payment_id == id);
-        if (payment) {
-          alert(`Payment Details:\nID: ${payment.payment_id}\nCustomer: ${payment.customer_id}\nOrder: ${payment.order_id}\nMethod: ${formatPaymentMethod(payment.payment_method)}\nAmount: ₱${payment.amount.toFixed(2)}\nStatus: ${payment.status}\nDate: ${payment.created_at}`);
-        }
-      }
-
-      function viewCashFlowDetails(id) {
-        const entry = cashFlow.find(e => e.entry_id == id);
-        if (entry) {
-          alert(`Cash Flow Entry:\nID: ${entry.entry_id}\nType: ${formatCashFlowType(entry.type)}\nDescription: ${entry.description}\nAmount: ₱${entry.amount.toFixed(2)}\nDate: ${entry.date}\nRelated Refund: ${entry.related_refund || 'N/A'}\nStatus: ${entry.status}`);
-        }
-      }
-
-      // Role management functions
-      function editRole(id) {
-        const role = rolesApprovals.find(r => r.role_id == id);
-        if (role) {
-          document.getElementById('roleName').value = role.role_name;
-          document.getElementById('userId').value = role.user_id;
-          document.getElementById('approvalRights').value = role.approval_rights;
-          currentRoleId = id;
-          addRoleModal.style.display = "flex";
-        }
-      }
-
-      function confirmDelete(id) {
-        currentRoleId = id;
-        deleteModal.style.display = "flex";
-      }
-
-      // Populate select options for manual processing
-      function populateManualProcessSelects() {
-        const refundSelect = document.getElementById("refundSelect");
-        const paymentSelect = document.getElementById("paymentSelect");
-        const cashFlowSelect = document.getElementById("cashFlowSelect");
-
-        // Clear existing options
-        refundSelect.innerHTML = '<option value="">Select Refund</option>';
-        paymentSelect.innerHTML = '<option value="">Select Payment</option>';
-        cashFlowSelect.innerHTML = '<option value="">Select Cash Flow Entry</option>';
-
-        // Populate refund options
-        refunds.forEach(refund => {
-          if (refund.status !== "processed") {
-            const option = document.createElement("option");
-            option.value = refund.refund_id;
-            option.textContent = `Refund #${refund.refund_id} - ₱${refund.refund_amount.toFixed(2)}`;
-            refundSelect.appendChild(option);
-          }
-        });
-
-        // Populate payment options
-        payments.forEach(payment => {
-          const option = document.createElement("option");
-            option.value = payment.payment_id;
-            option.textContent = `Payment #${payment.payment_id} - ₱${payment.amount.toFixed(2)}`;
-            paymentSelect.appendChild(option);
-        });
-
-        // Populate cash flow options
-        cashFlow.forEach(entry => {
-          if (entry.status !== "processed") {
-            const option = document.createElement("option");
-            option.value = entry.entry_id;
-            option.textContent = `${formatCashFlowType(entry.type)} - ${entry.description} - ₱${entry.amount.toFixed(2)}`;
-            cashFlowSelect.appendChild(option);
-          }
-        });
-      }
-
-      // Event listeners for action buttons
-      document.getElementById("manualProcessBtn").addEventListener("click", () => {
-        populateManualProcessSelects();
-        manualProcessModal.style.display = "flex";
-      });
-
-      document.getElementById("approvalBtn").addEventListener("click", () => {
-        // Switch to the approvals tab
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        
-        document.querySelector('.tab[data-tab="approvals"]').classList.add('active');
-        document.getElementById("approvals-tab").classList.add('active');
-      });
-
-      document.getElementById("addRoleBtn").addEventListener("click", () => {
-        addRoleModal.style.display = "flex";
-        currentRoleId = null;
-        addRoleForm.reset();
-      });
-
-      cancelManualProcess.addEventListener("click", () => {
-        manualProcessModal.style.display = "none";
-      });
-
-      cancelAddRole.addEventListener("click", () => {
-        addRoleModal.style.display = "none";
-      });
-
-      cancelDelete.addEventListener("click", () => {
-        deleteModal.style.display = "none";
-      });
-
-      manualProcessForm.addEventListener("submit", function(e) {
-        e.preventDefault();
-        const refundId = document.getElementById("refundSelect").value;
-        const paymentId = document.getElementById("paymentSelect").value;
-        const cashFlowId = document.getElementById("cashFlowSelect").value;
-        
-        if (!refundId || !paymentId || !cashFlowId) {
-          alert("Please select all required records to process.");
-          return;
-        }
-        
-        // Update statuses to processed
-        const refund = refunds.find(r => r.refund_id == refundId);
-        const payment = payments.find(p => p.payment_id == paymentId);
-        const cashFlowEntry = cashFlow.find(c => c.entry_id == cashFlowId);
-        
-        if (refund) refund.status = "processed";
-        if (payment) payment.status = "refunded";
-        if (cashFlowEntry) cashFlowEntry.status = "processed";
-        
-        // Refresh all tables
-        renderRefunds(refunds);
-        renderPayments(payments);
-        renderCashFlow(cashFlow);
-        
-        // In a real application, this would send the data to the server
-        alert("Refund processed successfully!");
-        manualProcessModal.style.display = "none";
-      });
-
-      addRoleForm.addEventListener("submit", function(e) {
-        e.preventDefault();
-        const roleName = document.getElementById("roleName").value;
-        const userId = document.getElementById("userId").value;
-        const approvalRights = document.getElementById("approvalRights").value;
-        
-        if (!roleName || !userId || !approvalRights) {
-          alert("Please fill in all fields.");
-          return;
-        }
-        
-        if (currentRoleId) {
-          // Update existing role
-          const role = rolesApprovals.find(r => r.role_id == currentRoleId);
-          if (role) {
-            role.role_name = roleName;
-            role.user_id = userId;
-            role.approval_rights = approvalRights;
-            role.last_action_date = new Date().toISOString().split('T')[0];
-          }
-        } else {
-          // Add new role to the list
-          const newRole = {
-            role_id: rolesApprovals.length + 1,
-            role_name: roleName,
-            user_id: userId,
-            approval_rights: approvalRights,
-            last_action_date: new Date().toISOString().split('T')[0]
-          };
-          
-          rolesApprovals.push(newRole);
-        }
-        
-        renderApprovals(rolesApprovals);
-        
-        // In a real application, this would send the data to the server
-        alert(currentRoleId ? "Role updated successfully!" : "Role added successfully!");
-        addRoleModal.style.display = "none";
-        addRoleForm.reset();
-      });
-
-      document.getElementById('confirmDelete').addEventListener('click', () => {
-        rolesApprovals = rolesApprovals.filter(r => r.role_id != currentRoleId);
-        renderApprovals(rolesApprovals);
-        deleteModal.style.display = "none";
-        alert(`Role #${currentRoleId} has been deleted.`);
-      });
-
-      // Close modals when clicking outside
-      window.addEventListener("click", (e) => {
-        if (e.target === manualProcessModal) {
-          manualProcessModal.style.display = "none";
-        }
-        if (e.target === addRoleModal) {
-          addRoleModal.style.display = "none";
-        }
-        if (e.target === deleteModal) {
-          deleteModal.style.display = "none";
-        }
-      });
-
-      // Process refunds
-      document.getElementById("processRefundsBtn").addEventListener("click", () => {
-        // Simulate processing
-        alert("Processing refunds. This may take a few moments...");
-        
-        // Simulate some processing actions
-        setTimeout(() => {
-          // For demo purposes, let's process a few refunds automatically
-          if (refunds.length > 0 && payments.length > 0) {
-            // Process first pending refund
-            const pendingRefund = refunds.find(r => r.status === "pending");
-            const relatedPayment = pendingRefund ? payments.find(p => p.payment_id == pendingRefund.payment_id) : null;
+        // Search functionality
+        document.getElementById('refundSearch').addEventListener('input', function() {
+            const searchText = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#dashboard-tab tbody tr');
             
-            if (pendingRefund) pendingRefund.status = "processed";
-            if (relatedPayment) relatedPayment.status = "refunded";
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                let found = false;
+                
+                cells.forEach(cell => {
+                    if (cell.textContent.toLowerCase().includes(searchText)) {
+                        found = true;
+                    }
+                });
+                
+                row.style.display = found ? '' : 'none';
+            });
+        });
+
+        // Filter functionality
+        const filters = document.querySelectorAll('.filter-select');
+        filters.forEach(filter => {
+            filter.addEventListener('change', filterData);
+        });
+
+        function filterData() {
+            // This would filter data based on selected filters in a real application
+            console.log('Filtering data...');
+        }
+
+        // Add hover animations to buttons
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+            });
             
-            // Refresh all tables
-            renderRefunds(refunds);
-            renderPayments(payments);
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Add animation to table rows
+        const tableRows = document.querySelectorAll('tr');
+        tableRows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+            });
             
-            alert("Refund processing completed. Some refunds have been processed.");
-          } else {
-            alert("Refund processing completed. No refunds to process.");
-          }
-        }, 2000);
-      });
+            row.addEventListener('mouseleave', function() {
+                this.style.boxShadow = 'none';
+            });
+        });
 
-      // Export report
-      document.getElementById("exportReportBtn").addEventListener("click", () => {
-        // In a real application, this would generate and download a report
-        alert("Report exported successfully!");
-      });
-
-      // Apply filters
-      document.getElementById("applyRefundFilters").addEventListener("click", () => {
-        const statusFilter = document.getElementById("filterRefundStatus").value;
-        const dateFilter = document.getElementById("filterRefundDate").value;
-
-        let filteredRefunds = [...refunds];
-
-        if (statusFilter) {
-          filteredRefunds = filteredRefunds.filter(r => r.status === statusFilter);
-        }
-
-        if (dateFilter) {
-          filteredRefunds = filteredRefunds.filter(r => r.refund_date === dateFilter);
-        }
-
-        renderRefunds(filteredRefunds);
-      });
-
-      document.getElementById("applyPaymentFilters").addEventListener("click", () => {
-        const methodFilter = document.getElementById("filterPaymentMethod").value;
-        const statusFilter = document.getElementById("filterPaymentStatus").value;
-        const dateFilter = document.getElementById("filterPaymentDate").value;
-
-        let filteredPayments = [...payments];
-
-        if (methodFilter) {
-          filteredPayments = filteredPayments.filter(p => p.payment_method === methodFilter);
-        }
-
-        if (statusFilter) {
-          filteredPayments = filteredPayments.filter(p => p.status === statusFilter);
-        }
-
-        if (dateFilter) {
-          filteredPayments = filteredPayments.filter(p => p.created_at === dateFilter);
-        }
-
-        renderPayments(filteredPayments);
-      });
-
-      document.getElementById("applyCashFlowFilters").addEventListener("click", () => {
-        const typeFilter = document.getElementById("filterCashFlowType").value;
-        const dateFilter = document.getElementById("filterCashFlowDate").value;
-
-        let filteredCashFlow = [...cashFlow];
-
-        if (typeFilter) {
-          filteredCashFlow = filteredCashFlow.filter(c => c.type === typeFilter);
-        }
-
-        if (dateFilter) {
-          filteredCashFlow = filteredCashFlow.filter(c => c.date === dateFilter);
-        }
-
-        renderCashFlow(filteredCashFlow);
-      });
-
-      document.getElementById("applyApprovalFilters").addEventListener("click", () => {
-        const roleFilter = document.getElementById("filterRole").value;
-        const dateFilter = document.getElementById("filterApprovalDate").value;
-
-        let filteredApprovals = [...rolesApprovals];
-
-        if (roleFilter) {
-          filteredApprovals = filteredApprovals.filter(r => r.role_name === roleFilter);
-        }
-
-        if (dateFilter) {
-          filteredApprovals = filteredApprovals.filter(r => r.last_action_date === dateFilter);
-        }
-
-        renderApprovals(filteredApprovals);
-      });
-</script>
+        // Simulate import functionality
+        document.querySelector('.btn-import').addEventListener('click', function() {
+            alert('Importing refund transactions from Disbursement Refund Processing...');
+            // In a real application, this would trigger an import process
+        });
+    </script>
 </body>
 </html>

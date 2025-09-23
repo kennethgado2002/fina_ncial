@@ -143,19 +143,19 @@ $emp_data = ($result->num_rows > 0) ? $result->fetch_assoc() : ["fname" => "Unkn
                 </a>
                 <ul class="submenu">
                     <li style="display: <?= $ar_visible_customer_invoicing ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-regular fa-file-lines"></i> Customer Invoicing</a>
+                        <a href="../AR/customer_i.php"><i class="fa-regular fa-file-lines"></i> Customer Invoicing</a>
                     </li>
                     <li style="display: <?= $ar_visible_gateway ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-credit-card"></i> Payment Gateway Integration</a>
+                        <a href="../AR/payment-gateway_i.php"><i class="fa-solid fa-credit-card"></i> Payment Gateway Integration</a>
                     </li>
                     <li style="display: <?= $ar_visible_cod ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-truck-fast"></i> COD Orders</a>
+                        <a href="../AR/cod_o.php"><i class="fa-solid fa-truck-fast"></i> COD Orders</a>
                     </li>
                     <li style="display: <?= $ar_visible_refunds ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-arrow-rotate-left"></i> Refunds & Credit Memos</a>
+                        <a href="../AR/refunds-credit_m.php"><i class="fa-solid fa-arrow-rotate-left"></i> Refunds & Credit Memos</a>
                     </li>
                     <li style="display: <?= $ar_visible_aging ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-chart-bar"></i> AR Aging & Reports</a>
+                        <a href="../AR/aging.php"><i class="fa-solid fa-chart-bar"></i> AR Aging & Reports</a>
                     </li>
                 </ul>
                 <span class="tooltip">Accounts Receivable</span>
@@ -187,19 +187,19 @@ $emp_data = ($result->num_rows > 0) ? $result->fetch_assoc() : ["fname" => "Unkn
                 </a>
                 <ul class="submenu">
                     <li style="display: <?= $bm_visible_planning ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-calendar-plus"></i> Budget Planning</a>
+                        <a href="../BUDGETMNG/budget_p.php"><i class="fa-solid fa-calendar-plus"></i> Budget Planning</a>
                     </li>
                     <li style="display: <?= $bm_visible_commitment ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-clipboard-list"></i> Commitment Control</a>
+                        <a href="../BUDGETMNG/commitment_c.php"><i class="fa-solid fa-clipboard-list"></i> Commitment Control</a>
                     </li>
                     <li style="display: <?= $bm_visible_variance ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-chart-bar"></i> Variance Analysis</a>
+                        <a href="../BUDGETMNG/variance_a.php"><i class="fa-solid fa-chart-bar"></i> Variance Analysis</a>
                     </li>
                     <li style="display: <?= $bm_visible_forecasting ? 'block' : 'none' ?>;">
                         <a href="#"><i class="fa-solid fa-chart-line"></i> Forecasting</a>
                     </li>
                     <li style="display: <?= $bm_visible_tracking ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-diagram-project"></i> Campaign/Project Tracking</a>
+                        <a href="../BUDGETMNG/campaign-project_t.php"><i class="fa-solid fa-diagram-project"></i> Campaign/Project Tracking</a>
                     </li>
                 </ul>
                 <span class="tooltip">Budget Management</span>
@@ -234,22 +234,22 @@ $emp_data = ($result->num_rows > 0) ? $result->fetch_assoc() : ["fname" => "Unkn
                 </a>
                 <ul class="submenu">
                     <li style="display: <?= $disb_visible_vendor ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-money-bill-wave"></i> Vendor Payments</a>
+                        <a href="../DISBURSEMENT/vendor_payments.php"><i class="fa-solid fa-money-bill-wave"></i> Vendor Payments</a>
                     </li>
                     <li style="display: <?= $disb_visible_payroll ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-users"></i> Payroll Disbursement</a>
+                        <a href="../DISBURSEMENT/payroll_d.php"><i class="fa-solid fa-users"></i> Payroll Disbursement</a>
                     </li>
                     <li style="display: <?= $disb_visible_reimburse ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-receipt"></i> Reimbursement</a>
+                        <a href="../DISBURSEMENT/reimbursement_d.php"><i class="fa-solid fa-receipt"></i> Reimbursement</a>
                     </li>
                     <li style="display: <?= $disb_visible_refund ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-rotate-left"></i> Refund Processing</a>
+                        <a href="../DISBURSEMENT/refund_p.php"><i class="fa-solid fa-rotate-left"></i> Refund Processing</a>
                     </li>
                     <li style="display: <?= $disb_visible_approval ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-check-to-slot"></i> Approval Workflow</a>
+                        <a href="../DISBURSEMENT/approval_w.php"><i class="fa-solid fa-check-to-slot"></i> Approval Workflow</a>
                     </li>
                     <li style="display: <?= $disb_visible_cashflow ? 'block' : 'none' ?>;">
-                        <a href="#"><i class="fa-solid fa-chart-line"></i> Cash Flow Monitoring</a>
+                        <a href="../DISBURSEMENT/cash-flow_m.php"><i class="fa-solid fa-chart-line"></i> Cash Flow Monitoring</a>
                     </li>
                 </ul>
                 <span class="tooltip">Disbursement</span>
@@ -329,22 +329,22 @@ $emp_data = ($result->num_rows > 0) ? $result->fetch_assoc() : ["fname" => "Unkn
                 </a>
                 <ul class="submenu">
                   <li style="display: <?= $gl_visible_journal ? 'block' : 'none' ?>;">
-                    <a href="#"><i class="fa-solid fa-pen-to-square"></i> Journal Entry Management</a>
+                    <a href="../GL/journal-entry_m.php"><i class="fa-solid fa-pen-to-square"></i> Journal Entry Management</a>
                   </li>
                   <li style="display: <?= $gl_visible_chart ? 'block' : 'none' ?>;">
-                    <a href="#"><i class="fa-solid fa-table-list"></i> Chart of Accounts</a>
+                    <a href="../GL/charts-of-accounts.php"><i class="fa-solid fa-table-list"></i> Chart of Accounts</a>
                   </li>
                   <li style="display: <?= $gl_visible_recon ? 'block' : 'none' ?>;">
-                    <a href="#"><i class="fa-solid fa-scale-balanced"></i> Reconciliation Management</a>
+                    <a href="../GL/reconciliation_m.php"><i class="fa-solid fa-scale-balanced"></i> Reconciliation Management</a>
                   </li>
                   <li style="display: <?= $gl_visible_trial ? 'block' : 'none' ?>;">
-                    <a href="#"><i class="fa-solid fa-balance-scale"></i> Trial Balance</a>
+                    <a href="../GL/trial_balance.php"><i class="fa-solid fa-balance-scale"></i> Trial Balance</a>
                   </li>
                   <li style="display: <?= $gl_visible_financial ? 'block' : 'none' ?>;">
-                    <a href="#"><i class="fa-solid fa-file-lines"></i> Financial Statements</a>
+                    <a href="../GL/financial_statements.php"><i class="fa-solid fa-file-lines"></i> Financial Statements</a>
                   </li>
                   <li style="display: <?= $gl_visible_audit ? 'block' : 'none' ?>;">
-                    <a href="#"><i class="fa-solid fa-clipboard-check"></i> Audit Trail</a>
+                    <a href="../GL/audit_trail.php"><i class="fa-solid fa-clipboard-check"></i> Audit Trail</a>
                   </li>
                 </ul>
                 <span class="tooltip">General Ledger</span>

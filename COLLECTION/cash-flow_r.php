@@ -3,1702 +3,1236 @@ session_start();
 include "../PANEL/panel.php";
 ?>
 
-<link rel="stylesheet" href="../COLLECTION/ASSETS/css/style.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --header-height: 70px;
+            --transition: all 0.3s ease;
+            --inflow: #2ecc71;
+            --outflow: #e74c3c;
+            --forecast: #3498db;
+            --alert: #f39c12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Layout */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+            white-space: nowrap;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--secondary);
+            cursor: pointer;
+        }
+
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--secondary);
+        }
+
+        .menu-item i {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            transition: var(--transition);
+        }
+
+        /* Header */
+        .header {
+            height: var(--header-height);
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 30px;
+        }
+
+        .page-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .card-icon.inflow {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: #27ae60;
+        }
+
+        .card-icon.outflow {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #c0392b;
+        }
+
+        .card-icon.forecast {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: #2980b9;
+        }
+
+        .card-icon.alert {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: #d35400;
+        }
+
+        .dashboard-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .dashboard-card p {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .dashboard-card small {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--secondary);
+            color: var(--secondary);
+        }
+
+        .tab:hover {
+            background-color: #f8f9fa;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Search Box */
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px 20px;
+            padding-left: 45px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        /* Table */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            background-color: #f8f9fa;
+        }
+
+        tr {
+            transition: var(--transition);
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-healthy {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .status-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .status-critical {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .status-positive {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .status-negative {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Lato', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        .btn-view {
+            background-color: #dfe6e9;
+            color: #636e72;
+        }
+
+        .btn-view:hover {
+            background-color: #b2bec3;
+        }
+
+        .btn-sync {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-sync:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-export {
+            background-color: #9b59b6;
+            color: white;
+        }
+
+        .btn-export:hover {
+            background-color: #8e44ad;
+        }
+
+        .btn-download {
+            background-color: #34495e;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background-color: #2c3e50;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            transition: var(--transition);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 1200px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            animation: modalFade 0.3s;
+        }
+
+        @keyframes modalFade {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close:hover {
+            color: var(--dark);
+        }
+
+        .modal-body {
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Form Elements */
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        /* Filter Section */
+        .filter-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-label {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            background: white;
+            min-width: 180px;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            height: 300px;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Alert Panel */
+        .alert-panel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .alert-header {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .alert-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.2rem;
+            background-color: rgba(243, 156, 18, 0.2);
+            color: #d35400;
+        }
+
+        .alert-body {
+            padding: 20px;
+        }
+
+        .alert-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            transition: var(--transition);
+        }
+
+        .alert-item:last-child {
+            border-bottom: none;
+        }
+
+        .alert-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .alert-critical {
+            border-left: 4px solid var(--accent);
+        }
+
+        .alert-warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--dark);
+            color: white;
+            margin-top: 40px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .table-responsive {
+                overflow-x: auto;
+            }
+            
+            th, td {
+                white-space: nowrap;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0 15px;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-section {
+                flex-direction: column;
+            }
+            
+            .filter-select {
+                width: 100%;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1;
+                text-align: center;
+                padding: 10px;
+            }
+        }
+    </style>
 <!-- DASHBOARD MAIN CONTENT -->
 <div class="home-section">
   <div class="text">Dashboard</div>
-    <!-- Summary Cards -->
-      <div class="summary-cards">
-        <div class="card">
-          <div class="card-title">Total Expected Inflow</div>
-          <div class="card-value">₱24,420,000.00</div>
-          <div class="card-footer">From all sources</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Total Actual Inflow</div>
-          <div class="card-value">₱23,850,500.00</div>
-          <div class="card-footer">As of today</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Variance</div>
-          <div class="card-value">-₱569,500.00</div>
-          <div class="card-footer">
-            <span class="variance-negative">-2.33%</span>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">Forecast Amount</div>
-          <div class="card-value">₱25,100,000.00</div>
-          <div class="card-footer">Next period projection</div>
-        </div>
-      </div>
+            <!-- Main Content -->
+        <div class="main-content" id="main-content">
 
-      <!-- Cash Flow Actions -->
-      <div class="cashflow-actions">
-        <button id="generateReportBtn" class="btn btn-primary">
-          <i class="fa fa-sync"></i> Generate Report
-        </button>
-        <button id="exportReportBtn" class="btn btn-success">
-          <i class="fa fa-file-export"></i> Export Report
-        </button>
-        <button id="forecastBtn" class="btn btn-warning">
-          <i class="fa fa-chart-line"></i> Forecast
-        </button>
-        <button id="approvalBtn" class="btn btn-info">
-          <i class="fa fa-check-circle"></i> Approval Workflow
-        </button>
-      </div>
+            <!-- Content Area -->
+            <div class="content">
+                <h1 class="page-title">Cash Flow Reporting</h1>
 
-      <!-- Tabs -->
-      <div class="tabs">
-        <div class="tab active" data-tab="cashflow">Cash Flow</div>
-        <div class="tab" data-tab="payments">Payments</div>
-        <div class="tab" data-tab="gateways">Gateway Settlements</div>
-        <div class="tab" data-tab="cod">COD Collections</div>
-        <div class="tab" data-tab="deposits">Bank Deposits</div>
-        <div class="tab" data-tab="refunds">Refunds</div>
-        <div class="tab" data-tab="approvals">Roles & Approvals</div>
-      </div>
-
-      <!-- Tab Content -->
-      <div class="tab-content active" id="cashflow-tab">
-        <div class="container-fluid" style="padding: 20px">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="card">
-                <div class="card-header">
-                  <h4>Cash Flow Reports</h4>
-                </div>
-                <div class="card-body">
-                  <!-- Filter Section -->
-                  <div class="filter-section mb-4">
-                    <div class="row">
-                      <div class="col">
-                        <label for="filterSource">Inflow Source</label>
-                        <select id="filterSource" class="form-control">
-                          <option value="">All Sources</option>
-                          <option value="gateway">Gateway</option>
-                          <option value="cod">COD</option>
-                          <option value="wallet">Wallet</option>
-                          <option value="refund offset">Refund Offset</option>
-                        </select>
-                      </div>
-                      <div class="col">
-                        <label for="filterReportDate">Report Date</label>
-                        <input type="date" id="filterReportDate" class="form-control">
-                      </div>
-                      <div class="col">
-                        <label>&nbsp;</label>
-                        <button id="applyCashFlowFilters" class="btn btn-success form-control">
-                          <i class="fa fa-filter"></i> Apply Filters
-                        </button>
-                      </div>
+                <!-- Dashboard Cards -->
+                <div class="dashboard-cards">
+                    <div class="dashboard-card">
+                        <div class="card-icon inflow">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <h3>Total Inflows</h3>
+                        <p>₱856,300</p>
+                        <small>This month</small>
                     </div>
-                  </div>
-
-                  <!-- Cash Flow Chart -->
-                  <div class="chart-container">
-                    <canvas id="cashFlowChart"></canvas>
-                  </div>
-
-                  <!-- Cash Flow Table -->
-                  <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover" id="cashFlowTable">
-                      <thead>
-                        <tr>
-                          <th>Report ID</th>
-                          <th>Report Date</th>
-                          <th>Inflow Source</th>
-                          <th>Expected Inflow</th>
-                          <th>Actual Inflow</th>
-                          <th>Variance</th>
-                          <th>Forecast Amount</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- Data will be populated by JavaScript -->
-                      </tbody>
-                    </table>
-                  </div>
+                    <div class="dashboard-card">
+                        <div class="card-icon outflow">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <h3>Total Outflows</h3>
+                        <p>₱724,500</p>
+                        <small>This month</small>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-icon forecast">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3>Forecast Variance</h3>
+                        <p>+₱45,800</p>
+                        <small>5.4% above forecast</small>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-icon alert">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h3>Liquidity Alerts</h3>
+                        <p>2</p>
+                        <small>Requires attention</small>
+                    </div>
                 </div>
-              </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tab active" data-tab="dashboard">Daily Inflow Dashboard</div>
+                    <div class="tab" data-tab="netposition">Net Cash Position</div>
+                    <div class="tab" data-tab="variance">Forecast Variance</div>
+                    <div class="tab" data-tab="alerts">Liquidity Alerts</div>
+                </div>
+
+                <!-- Daily Inflow Dashboard Tab -->
+                <div class="tab-content active" id="dashboard-tab">
+                    <!-- Inflow Sources Chart -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Daily Inflow Sources</h2>
+                            <div>
+                                <button class="btn btn-sync"><i class="fas fa-sync-alt"></i> Sync Data</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <!-- Chart would be implemented with a library like Chart.js in a real application -->
+                                <div style="display: flex; align-items: flex-end; height: 100%; gap: 20px; justify-content: center;">
+                                    <div style="display: flex; flex-direction: column; align-items: center;">
+                                        <div style="background: #2ecc71; width: 60px; height: 200px; border-radius: 5px;"></div>
+                                        <span style="margin-top: 10px;">Gateway</span>
+                                        <span>₱456,300</span>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center;">
+                                        <div style="background: #3498db; width: 60px; height: 150px; border-radius: 5px;"></div>
+                                        <span style="margin-top: 10px;">COD</span>
+                                        <span>₱245,800</span>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center;">
+                                        <div style="background: #9b59b6; width: 60px; height: 120px; border-radius: 5px;"></div>
+                                        <span style="margin-top: 10px;">Bank Deposits</span>
+                                        <span>₱154,200</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Gateway</th>
+                                            <th>COD</th>
+                                            <th>Bank Deposits</th>
+                                            <th>Total Inflow</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>2025-09-09</td>
+                                            <td>₱45,300</td>
+                                            <td>₱28,500</td>
+                                            <td>₱15,200</td>
+                                            <td>₱89,000</td>
+                                            <td><span class="status status-healthy">Reconciled</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2025-09-08</td>
+                                            <td>₱42,800</td>
+                                            <td>₱25,700</td>
+                                            <td>₱14,500</td>
+                                            <td>₱83,000</td>
+                                            <td><span class="status status-healthy">Reconciled</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2025-09-07</td>
+                                            <td>₱38,900</td>
+                                            <td>₱22,300</td>
+                                            <td>₱12,800</td>
+                                            <td>₱74,000</td>
+                                            <td><span class="status status-healthy">Reconciled</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2025-09-06</td>
+                                            <td>₱40,200</td>
+                                            <td>₱24,100</td>
+                                            <td>₱13,500</td>
+                                            <td>₱77,800</td>
+                                            <td><span class="status status-healthy">Reconciled</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2025-09-05</td>
+                                            <td>₱43,500</td>
+                                            <td>₱26,800</td>
+                                            <td>₱14,900</td>
+                                            <td>₱85,200</td>
+                                            <td><span class="status status-healthy">Reconciled</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Net Cash Position Tab -->
+                <div class="tab-content" id="netposition-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Net Cash Position Report</h2>
+                            <div>
+                                <button class="btn btn-export"><i class="fas fa-file-export"></i> Export Report</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="filter-section">
+                                <div class="filter-item">
+                                    <span class="filter-label">Period</span>
+                                    <select class="filter-select" id="periodFilter">
+                                        <option value="current">Current Month</option>
+                                        <option value="previous">Previous Month</option>
+                                        <option value="quarter">This Quarter</option>
+                                        <option value="year">This Year</option>
+                                    </select>
+                                </div>
+                                <div class="filter-item">
+                                    <span class="filter-label">From</span>
+                                    <input type="date" class="filter-select" value="2025-09-01">
+                                </div>
+                                <div class="filter-item">
+                                    <span class="filter-label">To</span>
+                                    <input type="date" class="filter-select" value="2025-09-30">
+                                </div>
+                            </div>
+                            
+                            <div class="chart-container">
+                                <!-- Net Cash Position Chart -->
+                                <div style="display: flex; align-items: center; height: 100%; gap: 20px; justify-content: center;">
+                                    <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+                                        <div style="display: flex; width: 100%; height: 40px; margin-bottom: 10px;">
+                                            <div style="background: #2ecc71; width: 70%; display: flex; align-items: center; padding-left: 10px; color: white; font-weight: bold;">Collections: ₱856,300</div>
+                                            <div style="background: #e74c3c; width: 30%; display: flex; align-items: center; padding-left: 10px; color: white; font-weight: bold;">Disbursements: ₱724,500</div>
+                                        </div>
+                                        <div style="background: #3498db; width: 40%; height: 60px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">Net Position: ₱131,800</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Week</th>
+                                            <th>Collections</th>
+                                            <th>Disbursements</th>
+                                            <th>Net Cash Flow</th>
+                                            <th>Cumulative Position</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Week 1 (Sep 1-7)</td>
+                                            <td>₱198,500</td>
+                                            <td>₱175,200</td>
+                                            <td>+₱23,300</td>
+                                            <td>₱23,300</td>
+                                            <td><span class="status status-positive">Positive</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Week 2 (Sep 8-14)</td>
+                                            <td>₱225,800</td>
+                                            <td>₱195,600</td>
+                                            <td>+₱30,200</td>
+                                            <td>₱53,500</td>
+                                            <td><span class="status status-positive">Positive</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Week 3 (Sep 15-21)</td>
+                                            <td>₱215,400</td>
+                                            <td>₱185,300</td>
+                                            <td>+₱30,100</td>
+                                            <td>₱83,600</td>
+                                            <td><span class="status status-positive">Positive</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Week 4 (Sep 22-30)</td>
+                                            <td>₱216,600</td>
+                                            <td>₱168,400</td>
+                                            <td>+₱48,200</td>
+                                            <td>₱131,800</td>
+                                            <td><span class="status status-positive">Positive</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Forecast Variance Tab -->
+                <div class="tab-content" id="variance-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Forecast Variance Report</h2>
+                            <div>
+                                <button class="btn btn-sync"><i class="fas fa-sync-alt"></i> Sync to Budget</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="filter-section">
+                                <div class="filter-item">
+                                    <span class="filter-label">Forecast Type</span>
+                                    <select class="filter-select" id="forecastType">
+                                        <option value="monthly">Monthly Forecast</option>
+                                        <option value="quarterly">Quarterly Forecast</option>
+                                        <option value="annual">Annual Forecast</option>
+                                    </select>
+                                </div>
+                                <div class="filter-item">
+                                    <span class="filter-label">Category</span>
+                                    <select class="filter-select" id="categoryFilter">
+                                        <option value="all">All Categories</option>
+                                        <option value="gateway">Gateway Payments</option>
+                                        <option value="cod">COD Collections</option>
+                                        <option value="bank">Bank Deposits</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="chart-container">
+                                <!-- Forecast vs Actual Chart -->
+                                <div style="display: flex; align-items: flex-end; height: 100%; gap: 30px; justify-content: center;">
+                                    <div style="display: flex; flex-direction: column; align-items: center;">
+                                        <div style="background: #3498db; width: 40px; height: 180px; border-radius: 5px; margin-bottom: 5px;"></div>
+                                        <div style="background: #2ecc71; width: 40px; height: 200px; border-radius: 5px; position: absolute; margin-top: -200px;"></div>
+                                        <span style="margin-top: 10px;">Week 1</span>
+                                        <small>F: ₱190K | A: ₱198K</small>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center;">
+                                        <div style="background: #3498db; width: 40px; height: 200px; border-radius: 5px; margin-bottom: 5px;"></div>
+                                        <div style="background: #2ecc71; width: 40px; height: 225px; border-radius: 5px; position: absolute; margin-top: -225px;"></div>
+                                        <span style="margin-top: 10px;">Week 2</span>
+                                        <small>F: ₱200K | A: ₱225K</small>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center;">
+                                        <div style="background: #3498db; width: 40px; height: 210px; border-radius: 5px; margin-bottom: 5px;"></div>
+                                        <div style="background: #2ecc71; width: 40px; height: 215px; border-radius: 5px; position: absolute; margin-top: -215px;"></div>
+                                        <span style="margin-top: 10px;">Week 3</span>
+                                        <small>F: ₱210K | A: ₱215K</small>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center;">
+                                        <div style="background: #3498db; width: 40px; height: 205px; border-radius: 5px; margin-bottom: 5px;"></div>
+                                        <div style="background: #2ecc71; width: 40px; height: 216px; border-radius: 5px; position: absolute; margin-top: -216px;"></div>
+                                        <span style="margin-top: 10px;">Week 4</span>
+                                        <small>F: ₱205K | A: ₱216K</small>
+                                    </div>
+                                </div>
+                                <div style="text-align: center; margin-top: 10px;">
+                                    <span style="display: inline-block; width: 15px; height: 15px; background: #3498db; margin-right: 5px;"></span> Forecast
+                                    <span style="display: inline-block; width: 15px; height: 15px; background: #2ecc71; margin-right: 5px; margin-left: 15px;"></span> Actual
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Category</th>
+                                            <th>Forecast Amount</th>
+                                            <th>Actual Amount</th>
+                                            <th>Variance</th>
+                                            <th>Variance %</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Gateway Payments</td>
+                                            <td>₱420,000</td>
+                                            <td>₱456,300</td>
+                                            <td>+₱36,300</td>
+                                            <td>+8.6%</td>
+                                            <td><span class="status status-positive">Above Forecast</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>COD Collections</td>
+                                            <td>₱250,000</td>
+                                            <td>₱245,800</td>
+                                            <td>-₱4,200</td>
+                                            <td>-1.7%</td>
+                                            <td><span class="status status-negative">Below Forecast</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Bank Deposits</td>
+                                            <td>₱140,000</td>
+                                            <td>₱154,200</td>
+                                            <td>+₱14,200</td>
+                                            <td>+10.1%</td>
+                                            <td><span class="status status-positive">Above Forecast</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Total Inflows</strong></td>
+                                            <td><strong>₱810,000</strong></td>
+                                            <td><strong>₱856,300</strong></td>
+                                            <td><strong>+₱46,300</strong></td>
+                                            <td><strong>+5.7%</strong></td>
+                                            <td><span class="status status-positive">Above Forecast</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Liquidity Alerts Tab -->
+                <div class="tab-content" id="alerts-tab">
+                    <!-- Liquidity Alerts Panel -->
+                    <div class="alert-panel">
+                        <div class="alert-header">
+                            <div class="alert-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <h2 class="card-title">Liquidity Alerts</h2>
+                        </div>
+                        <div class="alert-body">
+                            <div class="alert-item alert-critical">
+                                <div>
+                                    <h4>Critical: Upcoming Large Disbursement</h4>
+                                    <p>Vendor payment of ₱350,000 due on 2025-09-15 exceeds projected inflows for that period.</p>
+                                </div>
+                                <div>
+                                    <span style="font-weight: bold; color: #e74c3c;">Shortfall: ₱85,000</span>
+                                    <button class="btn btn-view" style="margin-left: 10px;">View Details</button>
+                                </div>
+                            </div>
+                            <div class="alert-item alert-warning">
+                                <div>
+                                    <h4>Warning: COD Collection Delay</h4>
+                                    <p>COD collections for Week 3 are 15% below forecast, impacting cash availability.</p>
+                                </div>
+                                <div>
+                                    <span style="font-weight: bold; color: #f39c12;">Impact: ₱32,000</span>
+                                    <button class="btn btn-view" style="margin-left: 10px;">View Details</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Cash Health Status</h2>
+                            <div>
+                                <button class="btn btn-download"><i class="fas fa-download"></i> CFO Report</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <!-- Cash Health Gauge -->
+                                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                                    <div style="width: 200px; height: 200px; border-radius: 50%; background: conic-gradient(#2ecc71 0% 70%, #f39c12 70% 90%, #e74c3c 90% 100%); display: flex; align-items: center; justify-content: center;">
+                                        <div style="width: 150px; height: 150px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                                            <span style="font-size: 1.5rem; font-weight: bold;">Healthy</span>
+                                            <span style="color: #7f8c8d;">15-Day Buffer</span>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 20px; text-align: center;">
+                                        <p>Current cash position supports 15 days of operations at current burn rate.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Metric</th>
+                                            <th>Current Value</th>
+                                            <th>Threshold</th>
+                                            <th>Status</th>
+                                            <th>Trend</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Operating Cash Ratio</td>
+                                            <td>1.8</td>
+                                            <td>> 1.5</td>
+                                            <td><span class="status status-healthy">Healthy</span></td>
+                                            <td><i class="fas fa-arrow-up" style="color: #2ecc71;"></i> Improving</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Quick Ratio</td>
+                                            <td>1.2</td>
+                                            <td>> 1.0</td>
+                                            <td><span class="status status-healthy">Adequate</span></td>
+                                            <td><i class="fas fa-arrow-right" style="color: #f39c12;"></i> Stable</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Cash Burn Rate (Days)</td>
+                                            <td>15</td>
+                                            <td>> 30</td>
+                                            <td><span class="status status-warning">Watch</span></td>
+                                            <td><i class="fas fa-arrow-down" style="color: #e74c3c;"></i> Declining</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Debt Service Coverage</td>
+                                            <td>3.5</td>
+                                            <td>> 2.0</td>
+                                            <td><span class="status status-healthy">Strong</span></td>
+                                            <td><i class="fas fa-arrow-up" style="color: #2ecc71;"></i> Improving</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="tab-content" id="payments-tab">
-        <div class="container-fluid" style="padding: 20px">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="card">
-                <div class="card-header">
-                  <h4>Payments (Expected Inflows)</h4>
-                </div>
-                <div class="card-body">
-                  <!-- Filter Section -->
-                  <div class="filter-section mb-4">
-                    <div class="row">
-                      <div class="col">
-                        <label for="filterPaymentMethod">Payment Method</label>
-                        <select id="filterPaymentMethod" class="form-control">
-                          <option value="">All Methods</option>
-                          <option value="gateway">Gateway</option>
-                          <option value="cod">COD</option>
-                          <option value="wallet">Wallet</option>
-                        </select>
-                      </div>
-                      <div class="col">
-                        <label for="filterPaymentStatus">Status</label>
-                        <select id="filterPaymentStatus" class="form-control">
-                          <option value="">All Statuses</option>
-                          <option value="pending">Pending</option>
-                          <option value="received">Received</option>
-                          <option value="unsettled">Unsettled</option>
-                          <option value="refunded">Refunded</option>
-                        </select>
-                      </div>
-                      <div class="col">
-                        <label for="filterPaymentDate">Date Range</label>
-                        <input type="date" id="filterPaymentDate" class="form-control">
-                      </div>
-                      <div class="col">
-                        <label>&nbsp;</label>
-                        <button id="applyPaymentFilters" class="btn btn-success form-control">
-                          <i class="fa fa-filter"></i> Apply Filters
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Payments Table -->
-                  <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover" id="paymentsTable">
-                      <thead>
-                        <tr>
-                          <th>Payment ID</th>
-                          <th>Customer ID</th>
-                          <th>Order ID</th>
-                          <th>Payment Method</th>
-                          <th>Amount</th>
-                          <th>Status</th>
-                          <th>Created At</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- Data will be populated by JavaScript -->
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+            <!-- Footer -->
+            <div class="footer">
+                <p>&copy; 2025 Financial System - Cash Flow Reporting</p>
             </div>
-          </div>
         </div>
-      </div>
-
-      <div class="tab-content" id="gateways-tab">
-        <div class="container-fluid" style="padding: 20px">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="card">
-                <div class="card-header">
-                  <h4>Gateway Settlements</h4>
-                </div>
-                <div class="card-body">
-                  <!-- Filter Section -->
-                  <div class="filter-section mb-4">
-                    <div class="row">
-                      <div class="col">
-                        <label for="filterGateway">Gateway</label>
-                        <select id="filterGateway" class="form-control">
-                          <option value="">All Gateways</option>
-                          <option value="PayPal">PayPal</option>
-                          <option value="Stripe">Stripe</option>
-                          <option value="GCash">GCash</option>
-                          <option value="PayMaya">PayMaya</option>
-                        </select>
-                      </div>
-                      <div class="col">
-                        <label for="filterSettlementStatus">Status</label>
-                        <select id="filterSettlementStatus" class="form-control">
-                          <option value="">All Statuses</option>
-                          <option value="matched">Matched</option>
-                          <option value="failed">Failed</option>
-                          <option value="pending">Pending</option>
-                        </select>
-                      </div>
-                      <div class="col">
-                        <label for="filterSettlementDate">Date Range</label>
-                        <input type="date" id="filterSettlementDate" class="form-control">
-                      </div>
-                      <div class="col">
-                        <label>&nbsp;</label>
-                        <button id="applySettlementFilters" class="btn btn-success form-control">
-                          <i class="fa fa-filter"></i> Apply Filters
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Settlements Table -->
-                  <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover" id="settlementsTable">
-                      <thead>
-                        <tr>
-                          <th>Settlement ID</th>
-                          <th>Gateway Name</th>
-                          <th>Transaction Ref</th>
-                          <th>Expected Amount</th>
-                          <th>Received Amount</th>
-                          <th>Settlement Date</th>
-                          <th>Status</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- Data will be populated by JavaScript -->
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="tab-content" id="cod-tab">
-        <div class="container-fluid" style="padding: 20px">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="card">
-                <div class="card-header">
-                  <h4>COD Collections</h4>
-                </div>
-                <div class="card-body">
-                  <!-- Filter Section -->
-                  <div class="filter-section mb-4">
-                    <div class="row">
-                      <div class="col">
-                        <label for="filterPartner">Partner</label>
-                        <select id="filterPartner" class="form-control">
-                          <option value="">All Partners</option>
-                          <option value="LBC">LBC</option>
-                          <option value="JRS">JRS</option>
-                          <option value="APC">APC</option>
-                          <option value="NinjaVan">NinjaVan</option>
-                        </select>
-                      </div>
-                      <div class="col">
-                        <label for="filterCollectionStatus">Status</label>
-                        <select id="filterCollectionStatus" class="form-control">
-                          <option value="">All Statuses</option>
-                          <option value="pending">Pending</option>
-                          <option value="received">Received</option>
-                          <option value="short">Short</option>
-                          <option value="delayed">Delayed</option>
-                        </select>
-                      </div>
-                      <div class="col">
-                        <label for="filterCollectionDate">Date Range</label>
-                        <input type="date" id="filterCollectionDate" class="form-control">
-                      </div>
-                      <div class="col">
-                        <label>&nbsp;</label>
-                        <button id="applyCollectionFilters" class="btn btn-success form-control">
-                          <i class="fa fa-filter"></i> Apply Filters
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Collections Table -->
-                  <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover" id="collectionsTable">
-                      <thead>
-                        <tr>
-                          <th>COD ID</th>
-                          <th>Partner ID</th>
-                          <th>Delivery Batch No</th>
-                          <th>Expected Amount</th>
-                          <th>Deposited Amount</th>
-                          <th>Deposit Date</th>
-                          <th>Status</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- Data will be populated by JavaScript -->
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="tab-content" id="deposits-tab">
-        <div class="container-fluid" style="padding: 20px">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="card">
-                <div class="card-header">
-                  <h4>Bank Deposits (Actual Inflows)</h4>
-                </div>
-                <div class="card-body">
-                  <!-- Filter Section -->
-                  <div class="filter-section mb-4">
-                    <div class="row">
-                      <div class="col">
-                        <label for="filterBank">Bank</label>
-                        <select id="filterBank" class="form-control">
-                          <option value="">All Banks</option>
-                          <option value="BDO">BDO</option>
-                          <option value="BPI">BPI</option>
-                          <option value="Metrobank">Metrobank</option>
-                          <option value="Chinabank">Chinabank</option>
-                        </select>
-                      </div>
-                      <div class="col">
-                        <label for="filterDepositStatus">Status</label>
-                        <select id="filterDepositStatus" class="form-control">
-                          <option value="">All Statuses</option>
-                          <option value="matched">Matched</option>
-                          <option value="unmatched">Unmatched</option>
-                          <option value="pending">Pending</option>
-                        </select>
-                      </div>
-                      <div class="col">
-                        <label for="filterDepositDate">Date Range</label>
-                        <input type="date" id="filterDepositDate" class="form-control">
-                      </div>
-                      <div class="col">
-                        <label>&nbsp;</label>
-                        <button id="applyDepositFilters" class="btn btn-success form-control">
-                          <i class="fa fa-filter"></i> Apply Filters
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Deposits Table -->
-                  <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover" id="depositsTable">
-                      <thead>
-                        <tr>
-                          <th>Deposit ID</th>
-                          <th>Bank Name</th>
-                          <th>Reference No</th>
-                          <th>Amount</th>
-                          <th>Deposit Date</th>
-                          <th>Source Type</th>
-                          <th>Status</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- Data will be populated by JavaScript -->
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="tab-content" id="refunds-tab">
-        <div class="container-fluid" style="padding: 20px">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="card">
-                <div class="card-header">
-                  <h4>Refunds (Deductions)</h4>
-                </div>
-                <div class="card-body">
-                  <!-- Filter Section -->
-                  <div class="filter-section mb-4">
-                    <div class="row">
-                      <div class="col">
-                        <label for="filterRefundStatus">Status</label>
-                        <select id="filterRefundStatus" class="form-control">
-                          <option value="">All Statuses</option>
-                          <option value="processed">Processed</option>
-                          <option value="pending">Pending</option>
-                          <option value="error">Error</option>
-                        </select>
-                      </div>
-                      <div class="col">
-                        <label for="filterRefundDate">Date Range</label>
-                        <input type="date" id="filterRefundDate" class="form-control">
-                      </div>
-                      <div class="col">
-                        <label>&nbsp;</label>
-                        <button id="applyRefundFilters" class="btn btn-success form-control">
-                          <i class="fa fa-filter"></i> Apply Filters
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Refunds Table -->
-                  <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover" id="refundsTable">
-                      <thead>
-                        <tr>
-                          <th>Refund ID</th>
-                          <th>Payment ID</th>
-                          <th>Order ID</th>
-                          <th>Refund Amount</th>
-                          <th>Refund Date</th>
-                          <th>Status</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- Data will be populated by JavaScript -->
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="tab-content" id="approvals-tab">
-        <div class="container-fluid" style="padding: 20px">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="approval-section">
-                <h3>Roles & Approval Management</h3>
-                
-                <div class="filter-section mb-4">
-                  <div class="row">
-                    <div class="col">
-                      <label for="filterRole">Role</label>
-                      <select id="filterRole" class="form-control">
-                        <option value="">All Roles</option>
-                        <option value="CFO">CFO</option>
-                        <option value="Treasury Analyst">Treasury Analyst</option>
-                        <option value="Financial Director">Financial Director</option>
-                        <option value="Expense Auditor">Expense Auditor</option>
-                      </select>
-                    </div>
-                    <div class="col">
-                      <label for="filterApprovalDate">Date Range</label>
-                      <input type="date" id="filterApprovalDate" class="form-control">
-                    </div>
-                    <div class="col">
-                      <label>&nbsp;</label>
-                      <button id="applyApprovalFilters" class="btn btn-success form-control">
-                        <i class="fa fa-filter"></i> Apply Filters
-                      </button>
-                    </div>
-                    <div class="col">
-                      <label>&nbsp;</label>
-                      <button id="addRoleBtn" class="btn btn-primary form-control">
-                        <i class="fa fa-plus"></i> Add Role
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="table-responsive">
-                  <table class="approval-table table-striped table-hover">
-                    <thead>
-                      <tr>
-                        <th>Role ID</th>
-                        <th>Role Name</th>
-                        <th>User ID</th>
-                        <th>Approval Rights</th>
-                        <th>Last Action Date</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody id="approvalsTableBody">
-                      <!-- Data will be populated by JavaScript -->
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Add Role Modal -->
-    <div id="addRoleModal" class="modal-overlay">
-      <div class="modal-box">
-        <h3>Add Role & Approval</h3>
-        <form id="addRoleForm">
-          <div class="form-group mb-3">
-            <label for="roleName">Role Name</label>
-            <select class="form-control" id="roleName" required>
-              <option value="">Select Role</option>
-              <option value="CFO">CFO</option>
-              <option value="Treasury Analyst">Treasury Analyst</option>
-              <option value="Financial Director">Financial Director</option>
-              <option value="Expense Auditor">Expense Auditor</option>
-            </select>
-          </div>
-          <div class="form-group mb-3">
-            <label for="userId">User ID</label>
-            <input type="text" class="form-control" id="userId" required placeholder="Enter User ID">
-          </div>
-          <div class="form-group mb-3">
-            <label for="approvalRights">Approval Rights</label>
-            <select class="form-control" id="approvalRights" required>
-              <option value="">Select Rights</option>
-              <option value="view">View Only</option>
-              <option value="approve">Approve</option>
-              <option value="edit">Edit & Approve</option>
-            </select>
-          </div>
-          <div class="modal-actions">
-            <button type="submit" class="btn-yes">
-              <i class="fas fa-plus"></i> Add Role
-            </button>
-            <button type="button" id="cancelAddRole" class="btn-no">
-              <i class="fas fa-times"></i> Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="modal-overlay">
-      <div class="modal-box">
-        <h3>Confirm Delete</h3>
-        <p>Are you sure you want to delete this role?</p>
-        <div class="modal-actions">
-          <button id="confirmDelete" class="btn-yes">
-            <i class="fas fa-trash"></i> Delete
-          </button>
-          <button id="cancelDelete" class="btn-no">
-            <i class="fas fa-times"></i> Cancel
-          </button>
-        </div>
-      </div>
     </div>
 
 </div>
 
 <script src="../PANEL/ASSETS/js/script-p.js"></script>
-<!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-      // Sample data for cash flow reports
-      let cashFlowReports = [
-        {
-          report_id: 801,
-          report_date: "2025-08-31",
-          inflow_source: "gateway",
-          expected_inflow: 12500000.00,
-          actual_inflow: 12250000.00,
-          variance: -250000.00,
-          forecast_amount: 12750000.00
-        },
-        {
-          report_id: 802,
-          report_date: "2025-08-31",
-          inflow_source: "cod",
-          expected_inflow: 8500000.00,
-          actual_inflow: 8320000.00,
-          variance: -180000.00,
-          forecast_amount: 8650000.00
-        },
-        {
-          report_id: 803,
-          report_date: "2025-08-31",
-          inflow_source: "wallet",
-          expected_inflow: 2200000.00,
-          actual_inflow: 2180000.00,
-          variance: -20000.00,
-          forecast_amount: 2250000.00
-        },
-        {
-          report_id: 804,
-          report_date: "2025-08-31",
-          inflow_source: "refund offset",
-          expected_inflow: 1200000.00,
-          actual_inflow: 1000500.00,
-          variance: -199500.00,
-          forecast_amount: 1150000.00
-        }
-      ];
 
-      // Sample data for payments (reusing from previous systems)
-      let payments = [
-        {
-          payment_id: 1001,
-          customer_id: 20015,
-          order_id: 50123,
-          payment_method: "gateway",
-          amount: 2500.00,
-          status: "received",
-          created_at: "2025-08-15"
-        },
-        {
-          payment_id: 1002,
-          customer_id: 20032,
-          order_id: 50245,
-          payment_method: "gateway",
-          amount: 5200.50,
-          status: "received",
-          created_at: "2025-08-22"
-        },
-        {
-          payment_id: 1003,
-          customer_id: 20045,
-          order_id: 50312,
-          payment_method: "gateway",
-          amount: 1850.75,
-          status: "unsettled",
-          created_at: "2025-08-30"
-        },
-        {
-          payment_id: 1004,
-          customer_id: 20067,
-          order_id: 50456,
-          payment_method: "cod",
-          amount: 3200.00,
-          status: "pending",
-          created_at: "2025-09-01"
-        },
-        {
-          payment_id: 1005,
-          customer_id: 20089,
-          order_id: 50567,
-          payment_method: "gateway",
-          amount: 1750.25,
-          status: "received",
-          created_at: "2025-09-02"
-        }
-      ];
-
-      // Sample data for gateway settlements (reusing from previous systems)
-      let settlements = [
-        {
-          settlement_id: 501,
-          gateway_name: "PayPal",
-          transaction_ref: "PP-20250815-001",
-          expected_amount: 2500.00,
-          received_amount: 2500.00,
-          settlement_date: "2025-08-16",
-          status: "matched"
-        },
-        {
-          settlement_id: 502,
-          gateway_name: "Stripe",
-          transaction_ref: "ST-20250822-001",
-          expected_amount: 5200.50,
-          received_amount: 5200.50,
-          settlement_date: "2025-08-23",
-          status: "matched"
-        },
-        {
-          settlement_id: 503,
-          gateway_name: "GCash",
-          transaction_ref: "GC-20250830-001",
-          expected_amount: 1850.75,
-          received_amount: 1800.00,
-          settlement_date: "2025-08-31",
-          status: "failed"
-        },
-        {
-          settlement_id: 504,
-          gateway_name: "PayMaya",
-          transaction_ref: "PM-20250901-001",
-          expected_amount: 3200.00,
-          received_amount: 3200.00,
-          settlement_date: "2025-09-02",
-          status: "pending"
-        }
-      ];
-
-      // Sample data for COD collections (reusing from previous systems)
-      let collections = [
-        {
-          cod_id: 301,
-          partner_id: "LBC",
-          delivery_batch_no: "LBC-20250815-001",
-          expected_amount: 2500.00,
-          deposited_amount: 2500.00,
-          deposit_date: "2025-08-16",
-          status: "received"
-        },
-        {
-          cod_id: 302,
-          partner_id: "JRS",
-          delivery_batch_no: "JRS-20250822-001",
-          expected_amount: 5200.50,
-          deposited_amount: 5200.50,
-          deposit_date: "2025-08-23",
-          status: "received"
-        },
-        {
-          cod_id: 303,
-          partner_id: "APC",
-          delivery_batch_no: "APC-20250830-001",
-          expected_amount: 1850.75,
-          deposited_amount: 1800.00,
-          deposit_date: "2025-08-31",
-          status: "short"
-        },
-        {
-          cod_id: 304,
-          partner_id: "NinjaVan",
-          delivery_batch_no: "NV-20250901-001",
-          expected_amount: 3200.00,
-          deposited_amount: 3200.00,
-          deposit_date: "2025-09-03",
-          status: "delayed"
-        }
-      ];
-
-      // Sample data for bank deposits (reusing from previous systems)
-      let deposits = [
-        {
-          deposit_id: 801,
-          bank_name: "BDO",
-          reference_no: "BDO-20250816-001",
-          amount: 2500.00,
-          deposit_date: "2025-08-16",
-          source_type: "gateway",
-          status: "matched"
-        },
-        {
-          deposit_id: 802,
-          bank_name: "BPI",
-          reference_no: "BPI-20250823-001",
-          amount: 5200.50,
-          deposit_date: "2025-08-23",
-          source_type: "gateway",
-          status: "matched"
-        },
-        {
-          deposit_id: 803,
-          bank_name: "Metrobank",
-          reference_no: "MB-20250831-001",
-          amount: 1800.00,
-          deposit_date: "2025-08-31",
-          source_type: "gateway",
-          status: "unmatched"
-        },
-        {
-          deposit_id: 804,
-          bank_name: "Chinabank",
-          reference_no: "CB-20250902-001",
-          amount: 3200.00,
-          deposit_date: "2025-09-02",
-          source_type: "cod",
-          status: "pending"
-        }
-      ];
-
-      // Sample data for refunds (reusing from previous systems)
-      let refunds = [
-        {
-          refund_id: 601,
-          payment_id: 1001,
-          order_id: 50123,
-          refund_amount: 2500.00,
-          refund_date: "2025-08-16",
-          status: "processed"
-        },
-        {
-          refund_id: 602,
-          payment_id: 1002,
-          order_id: 50245,
-          refund_amount: 5200.50,
-          refund_date: "2025-08-23",
-          status: "processed"
-        },
-        {
-          refund_id: 603,
-          payment_id: 1003,
-          order_id: 50312,
-          refund_amount: 1800.00,
-          refund_date: "2025-08-31",
-          status: "pending"
-        },
-        {
-          refund_id: 604,
-          payment_id: 1004,
-          order_id: 50456,
-          refund_amount: 3200.00,
-          refund_date: "2025-09-02",
-          status: "error"
-        }
-      ];
-
-      // Sample data for roles and approvals
-      let rolesApprovals = [
-        {
-          role_id: 1,
-          role_name: "CFO",
-          user_id: "U5001",
-          approval_rights: "edit",
-          last_action_date: "2025-09-01"
-        },
-        {
-          role_id: 2,
-          role_name: "Treasury Analyst",
-          user_id: "U5002",
-          approval_rights: "approve",
-          last_action_date: "2025-08-30"
-        },
-        {
-          role_id: 3,
-          role_name: "Financial Director",
-          user_id: "U5003",
-          approval_rights: "view",
-          last_action_date: "2025-08-28"
-        },
-        {
-          role_id: 4,
-          role_name: "Expense Auditor",
-          user_id: "U5004",
-          approval_rights: "edit",
-          last_action_date: "2025-08-25"
-        }
-      ];
-
-      // DOM Elements
-      const cashFlowTable = document.getElementById("cashFlowTable");
-      const paymentsTable = document.getElementById("paymentsTable");
-      const settlementsTable = document.getElementById("settlementsTable");
-      const collectionsTable = document.getElementById("collectionsTable");
-      const depositsTable = document.getElementById("depositsTable");
-      const refundsTable = document.getElementById("refundsTable");
-      const approvalsTableBody = document.getElementById("approvalsTableBody");
-      const addRoleModal = document.getElementById("addRoleModal");
-      const deleteModal = document.getElementById("deleteModal");
-      const addRoleForm = document.getElementById("addRoleForm");
-      const cancelAddRole = document.getElementById("cancelAddRole");
-      const cancelDelete = document.getElementById("cancelDelete");
-      
-      // Current item being edited
-      let currentRoleId = null;
-      
-      // Chart instance
-      let cashFlowChart = null;
-
-      // Tab functionality
-      document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-          // Remove active class from all tabs and content
-          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-          
-          // Add active class to clicked tab
-          tab.classList.add('active');
-          
-          // Show corresponding content
-          const tabName = tab.getAttribute('data-tab');
-          document.getElementById(`${tabName}-tab`).classList.add('active');
-        });
-      });
-
-      // Initialize the page
-      document.addEventListener("DOMContentLoaded", function () {
-        renderCashFlowReports(cashFlowReports);
-        renderPayments(payments);
-        renderSettlements(settlements);
-        renderCollections(collections);
-        renderDeposits(deposits);
-        renderRefunds(refunds);
-        renderApprovals(rolesApprovals);
-        initializeChart(cashFlowReports);
-      });
-
-      // Initialize chart
-      function initializeChart(cashFlowData) {
-        const ctx = document.getElementById('cashFlowChart').getContext('2d');
-        
-        // Prepare data for chart
-        const labels = cashFlowData.map(item => formatInflowSource(item.inflow_source));
-        const expected = cashFlowData.map(item => item.expected_inflow);
-        const actual = cashFlowData.map(item => item.actual_inflow);
-        const forecast = cashFlowData.map(item => item.forecast_amount);
-        
-        cashFlowChart = new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: 'Expected Inflow',
-                data: expected,
-                backgroundColor: '#000a64',
-                borderColor: '#000a64',
-                borderWidth: 1
-              },
-              {
-                label: 'Actual Inflow',
-                data: actual,
-                backgroundColor: '#2a9d8f',
-                borderColor: '#2a9d8f',
-                borderWidth: 1
-              },
-              {
-                label: 'Forecast Amount',
-                data: forecast,
-                backgroundColor: '#f4a261',
-                borderColor: '#f4a261',
-                borderWidth: 1
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: {
-                beginAtZero: true,
-                ticks: {
-                  callback: function(value) {
-                    return '₱' + value.toLocaleString();
-                  }
-                }
-              }
-            }
-          }
-        });
-      }
-
-      // Render cash flow reports in the table
-      function renderCashFlowReports(cashFlowData) {
-        const tbody = cashFlowTable.querySelector("tbody");
-        tbody.innerHTML = "";
-
-        if (cashFlowData.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" class="text-center">No cash flow reports found</td></tr>';
-          return;
-        }
-
-        cashFlowData.forEach(report => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${report.report_id}</td>
-            <td>${report.report_date}</td>
-            <td>${formatInflowSource(report.inflow_source)}</td>
-            <td>₱${formatNumber(report.expected_inflow)}</td>
-            <td>₱${formatNumber(report.actual_inflow)}</td>
-            <td>${formatVariance(report.variance)}</td>
-            <td>₱${formatNumber(report.forecast_amount)}</td>
-            <td>
-              <div class="approval-actions">
-                <button class="btn btn-sm btn-primary view-btn" data-type="cashflow" data-id="${report.report_id}">
-                  <i class="fas fa-eye"></i>
-                </button>
-              </div>
-            </td>
-          `;
-          tbody.appendChild(row);
-        });
-        
-        // Add event listeners to view buttons
-        document.querySelectorAll('.view-btn[data-type="cashflow"]').forEach(btn => {
-          btn.addEventListener("click", () => viewCashFlowDetails(btn.dataset.id));
-        });
-      }
-
-      // Render payments in the table
-      function renderPayments(paymentsData) {
-        const tbody = paymentsTable.querySelector("tbody");
-        tbody.innerHTML = "";
-
-        if (paymentsData.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" class="text-center">No payments found</td></tr>';
-          return;
-        }
-
-        paymentsData.forEach(payment => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${payment.payment_id}</td>
-            <td>${payment.customer_id}</td>
-            <td>${payment.order_id}</td>
-            <td>${formatPaymentMethod(payment.payment_method)}</td>
-            <td>₱${formatNumber(payment.amount)}</td>
-            <td>${formatPaymentStatus(payment.status)}</td>
-            <td>${payment.created_at}</td>
-            <td>
-              <div class="approval-actions">
-                <button class="btn btn-sm btn-primary view-btn" data-type="payment" data-id="${payment.payment_id}">
-                  <i class="fas fa-eye"></i>
-                </button>
-              </div>
-            </td>
-          `;
-          tbody.appendChild(row);
-        });
-        
-        // Add event listeners to view buttons
-        document.querySelectorAll('.view-btn[data-type="payment"]').forEach(btn => {
-          btn.addEventListener("click", () => viewPaymentDetails(btn.dataset.id));
-        });
-      }
-
-      // Render settlements in the table
-      function renderSettlements(settlementsData) {
-        const tbody = settlementsTable.querySelector("tbody");
-        tbody.innerHTML = "";
-
-        if (settlementsData.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" class="text-center">No settlements found</td></tr>';
-          return;
-        }
-
-        settlementsData.forEach(settlement => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${settlement.settlement_id}</td>
-            <td>${settlement.gateway_name}</td>
-            <td>${settlement.transaction_ref}</td>
-            <td>₱${formatNumber(settlement.expected_amount)}</td>
-            <td>₱${formatNumber(settlement.received_amount)}</td>
-            <td>${settlement.settlement_date}</td>
-            <td>${formatSettlementStatus(settlement.status)}</td>
-            <td>
-              <div class="approval-actions">
-                <button class="btn btn-sm btn-primary view-btn" data-type="settlement" data-id="${settlement.settlement_id}">
-                  <i class="fas fa-eye"></i>
-                </button>
-              </div>
-            </td>
-          `;
-          tbody.appendChild(row);
-        });
-        
-        // Add event listeners to view buttons
-        document.querySelectorAll('.view-btn[data-type="settlement"]').forEach(btn => {
-          btn.addEventListener("click", () => viewSettlementDetails(btn.dataset.id));
-        });
-      }
-
-      // Render collections in the table
-      function renderCollections(collectionsData) {
-        const tbody = collectionsTable.querySelector("tbody");
-        tbody.innerHTML = "";
-
-        if (collectionsData.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" class="text-center">No collections found</td></tr>';
-          return;
-        }
-
-        collectionsData.forEach(collection => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${collection.cod_id}</td>
-            <td>${collection.partner_id}</td>
-            <td>${collection.delivery_batch_no}</td>
-            <td>₱${formatNumber(collection.expected_amount)}</td>
-            <td>₱${formatNumber(collection.deposited_amount)}</td>
-            <td>${collection.deposit_date}</td>
-            <td>${formatCollectionStatus(collection.status)}</td>
-            <td>
-              <div class="approval-actions">
-                <button class="btn btn-sm btn-primary view-btn" data-type="collection" data-id="${collection.cod_id}">
-                  <i class="fas fa-eye"></i>
-                </button>
-              </div>
-            </td>
-          `;
-          tbody.appendChild(row);
-        });
-        
-        // Add event listeners to view buttons
-        document.querySelectorAll('.view-btn[data-type="collection"]').forEach(btn => {
-          btn.addEventListener("click", () => viewCollectionDetails(btn.dataset.id));
-        });
-      }
-
-      // Render deposits in the table
-      function renderDeposits(depositsData) {
-        const tbody = depositsTable.querySelector("tbody");
-        tbody.innerHTML = "";
-
-        if (depositsData.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" class="text-center">No deposits found</td></tr>';
-          return;
-        }
-
-        depositsData.forEach(deposit => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${deposit.deposit_id}</td>
-            <td>${deposit.bank_name}</td>
-            <td>${deposit.reference_no}</td>
-            <td>₱${formatNumber(deposit.amount)}</td>
-            <td>${deposit.deposit_date}</td>
-            <td>${formatSourceType(deposit.source_type)}</td>
-            <td>${formatDepositStatus(deposit.status)}</td>
-            <td>
-              <div class="approval-actions">
-                <button class="btn btn-sm btn-primary view-btn" data-type="deposit" data-id="${deposit.deposit_id}">
-                  <i class="fas fa-eye"></i>
-                </button>
-              </div>
-            </td>
-          `;
-          tbody.appendChild(row);
-        });
-        
-        // Add event listeners to view buttons
-        document.querySelectorAll('.view-btn[data-type="deposit"]').forEach(btn => {
-          btn.addEventListener("click", () => viewDepositDetails(btn.dataset.id));
-        });
-      }
-
-      // Render refunds in the table
-      function renderRefunds(refundsData) {
-        const tbody = refundsTable.querySelector("tbody");
-        tbody.innerHTML = "";
-
-        if (refundsData.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7" class="text-center">No refunds found</td></tr>';
-          return;
-        }
-
-        refundsData.forEach(refund => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${refund.refund_id}</td>
-            <td>${refund.payment_id}</td>
-            <td>${refund.order_id}</td>
-            <td>₱${formatNumber(refund.refund_amount)}</td>
-            <td>${refund.refund_date}</td>
-            <td>${formatRefundStatus(refund.status)}</td>
-            <td>
-              <div class="approval-actions">
-                <button class="btn btn-sm btn-primary view-btn" data-type="refund" data-id="${refund.refund_id}">
-                  <i class="fas fa-eye"></i>
-                </button>
-              </div>
-            </td>
-          `;
-          tbody.appendChild(row);
-        });
-        
-        // Add event listeners to view buttons
-        document.querySelectorAll('.view-btn[data-type="refund"]').forEach(btn => {
-          btn.addEventListener("click", () => viewRefundDetails(btn.dataset.id));
-        });
-      }
-
-      // Render roles and approvals
-      function renderApprovals(approvalsData) {
-        approvalsTableBody.innerHTML = "";
-
-        if (approvalsData.length === 0) {
-          approvalsTableBody.innerHTML = '<tr><td colspan="6" class="text-center">No roles found</td></tr>';
-          return;
-        }
-
-        approvalsData.forEach(role => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${role.role_id}</td>
-            <td>${role.role_name}</td>
-            <td>${role.user_id}</td>
-            <td>${formatApprovalRights(role.approval_rights)}</td>
-            <td>${role.last_action_date}</td>
-            <td>
-              <div class="approval-actions">
-                <button class="btn btn-sm btn-primary edit-role-btn" data-id="${role.role_id}">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="btn btn-sm btn-danger delete-role-btn" data-id="${role.role_id}">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-            </td>
-          `;
-          approvalsTableBody.appendChild(row);
+        // Tab functionality
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Hide all tab content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Show the selected tab content
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+            });
         });
 
-        // Add event listeners to edit and delete buttons
-        document.querySelectorAll('.edit-role-btn').forEach(btn => {
-          btn.addEventListener("click", () => editRole(btn.dataset.id));
+        // Filter functionality
+        const filters = document.querySelectorAll('.filter-select');
+        filters.forEach(filter => {
+            filter.addEventListener('change', filterData);
         });
 
-        document.querySelectorAll('.delete-role-btn').forEach(btn => {
-          btn.addEventListener("click", () => confirmDelete(btn.dataset.id));
+        function filterData() {
+            // This would filter data based on selected filters in a real application
+            console.log('Filtering data...');
+        }
+
+        // Add hover animations to buttons
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
         });
-      }
 
-      // Format inflow source for display
-      function formatInflowSource(source) {
-        switch (source) {
-          case "gateway":
-            return "Payment Gateway";
-          case "cod":
-            return "Cash on Delivery";
-          case "wallet":
-            return "E-Wallet";
-          case "refund offset":
-            return "Refund Offset";
-          default:
-            return source;
-        }
-      }
-
-      // Format payment method for display
-      function formatPaymentMethod(method) {
-        switch (method) {
-          case "gateway":
-            return "Payment Gateway";
-          case "cod":
-            return "Cash on Delivery";
-          case "wallet":
-            return "E-Wallet";
-          default:
-            return method;
-        }
-      }
-
-      // Format payment status for display
-      function formatPaymentStatus(status) {
-        switch (status) {
-          case "pending":
-            return `<span class="status-badge status-behind">Pending</span>`;
-          case "received":
-            return `<span class="status-badge status-on-track">Received</span>`;
-          case "unsettled":
-            return `<span class="status-badge status-behind">Unsettled</span>`;
-          case "refunded":
-            return `<span class="status-badge status-over">Refunded</span>`;
-          default:
-            return status;
-        }
-      }
-
-      // Format settlement status for display
-      function formatSettlementStatus(status) {
-        switch (status) {
-          case "matched":
-            return `<span class="status-badge status-on-track">Matched</span>`;
-          case "failed":
-            return `<span class="status-badge status-over">Failed</span>`;
-          case "pending":
-            return `<span class="status-badge status-behind">Pending</span>`;
-          default:
-            return status;
-        }
-      }
-
-      // Format collection status for display
-      function formatCollectionStatus(status) {
-        switch (status) {
-          case "pending":
-            return `<span class="status-badge status-behind">Pending</span>`;
-          case "received":
-            return `<span class="status-badge status-on-track">Received</span>`;
-          case "short":
-            return `<span class="status-badge status-over">Short</span>`;
-          case "delayed":
-            return `<span class="status-badge status-behind">Delayed</span>`;
-          default:
-            return status;
-        }
-      }
-
-      // Format source type for display
-      function formatSourceType(type) {
-        switch (type) {
-          case "gateway":
-            return "Payment Gateway";
-          case "cod":
-            return "Cash on Delivery";
-          case "wallet":
-            return "E-Wallet";
-          case "refund offset":
-            return "Refund Offset";
-          default:
-            return type;
-        }
-      }
-
-      // Format deposit status for display
-      function formatDepositStatus(status) {
-        switch (status) {
-          case "matched":
-            return `<span class="status-badge status-on-track">Matched</span>`;
-          case "unmatched":
-            return `<span class="status-badge status-over">Unmatched</span>`;
-          case "pending":
-            return `<span class="status-badge status-behind">Pending</span>`;
-          default:
-            return status;
-        }
-      }
-
-      // Format refund status for display
-      function formatRefundStatus(status) {
-        switch (status) {
-          case "processed":
-            return `<span class="status-badge status-on-track">Processed</span>`;
-          case "pending":
-            return `<span class="status-badge status-behind">Pending</span>`;
-          case "error":
-            return `<span class="status-badge status-over">Error</span>`;
-          default:
-            return status;
-        }
-      }
-
-      // Format variance for display
-      function formatVariance(variance) {
-        if (variance > 0) {
-          return `<span class="variance-positive">+₱${formatNumber(variance)}</span>`;
-        } else if (variance < 0) {
-          return `<span class="variance-negative">-₱${formatNumber(Math.abs(variance))}</span>`;
-        } else {
-          return `<span>₱0.00</span>`;
-        }
-      }
-
-      // Format approval rights for display
-      function formatApprovalRights(rights) {
-        switch (rights) {
-          case "view":
-            return "View Only";
-          case "approve":
-            return "Approve";
-          case "edit":
-            return "Edit & Approve";
-          default:
-            return rights;
-        }
-      }
-
-      // Format number with commas
-      function formatNumber(num) {
-        return num.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-      }
-
-      // View details functions
-      function viewCashFlowDetails(id) {
-        const report = cashFlowReports.find(r => r.report_id == id);
-        if (report) {
-          alert(`Cash Flow Report Details:\nID: ${report.report_id}\nDate: ${report.report_date}\nSource: ${formatInflowSource(report.inflow_source)}\nExpected: ₱${formatNumber(report.expected_inflow)}\nActual: ₱${formatNumber(report.actual_inflow)}\nVariance: ${formatVariance(report.variance)}\nForecast: ₱${formatNumber(report.forecast_amount)}`);
-        }
-      }
-
-      function viewPaymentDetails(id) {
-        const payment = payments.find(p => p.payment_id == id);
-        if (payment) {
-          alert(`Payment Details:\nID: ${payment.payment_id}\nCustomer: ${payment.customer_id}\nOrder: ${payment.order_id}\nMethod: ${formatPaymentMethod(payment.payment_method)}\nAmount: ₱${formatNumber(payment.amount)}\nStatus: ${payment.status}\nDate: ${payment.created_at}`);
-        }
-      }
-
-      function viewSettlementDetails(id) {
-        const settlement = settlements.find(s => s.settlement_id == id);
-        if (settlement) {
-          alert(`Settlement Details:\nID: ${settlement.settlement_id}\nGateway: ${settlement.gateway_name}\nReference: ${settlement.transaction_ref}\nExpected: ₱${formatNumber(settlement.expected_amount)}\nReceived: ₱${formatNumber(settlement.received_amount)}\nDate: ${settlement.settlement_date}\nStatus: ${settlement.status}`);
-        }
-      }
-
-      function viewCollectionDetails(id) {
-        const collection = collections.find(c => c.cod_id == id);
-        if (collection) {
-          alert(`Collection Details:\nID: ${collection.cod_id}\nPartner: ${collection.partner_id}\nBatch: ${collection.delivery_batch_no}\nExpected: ₱${formatNumber(collection.expected_amount)}\nDeposited: ₱${formatNumber(collection.deposited_amount)}\nDate: ${collection.deposit_date}\nStatus: ${collection.status}`);
-        }
-      }
-
-      function viewDepositDetails(id) {
-        const deposit = deposits.find(d => d.deposit_id == id);
-        if (deposit) {
-          alert(`Deposit Details:\nID: ${deposit.deposit_id}\nBank: ${deposit.bank_name}\nReference: ${deposit.reference_no}\nAmount: ₱${formatNumber(deposit.amount)}\nDate: ${deposit.deposit_date}\nSource: ${formatSourceType(deposit.source_type)}\nStatus: ${deposit.status}`);
-        }
-      }
-
-      function viewRefundDetails(id) {
-        const refund = refunds.find(r => r.refund_id == id);
-        if (refund) {
-          alert(`Refund Details:\nID: ${refund.refund_id}\nPayment: ${refund.payment_id}\nOrder: ${refund.order_id}\nAmount: ₱${formatNumber(refund.refund_amount)}\nDate: ${refund.refund_date}\nStatus: ${refund.status}`);
-        }
-      }
-
-      // Role management functions
-      function editRole(id) {
-        const role = rolesApprovals.find(r => r.role_id == id);
-        if (role) {
-          document.getElementById('roleName').value = role.role_name;
-          document.getElementById('userId').value = role.user_id;
-          document.getElementById('approvalRights').value = role.approval_rights;
-          currentRoleId = id;
-          addRoleModal.style.display = "flex";
-        }
-      }
-
-      function confirmDelete(id) {
-        currentRoleId = id;
-        deleteModal.style.display = "flex";
-      }
-
-      // Event listeners for action buttons
-      document.getElementById("approvalBtn").addEventListener("click", () => {
-        // Switch to the approvals tab
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        
-        document.querySelector('.tab[data-tab="approvals"]').classList.add('active');
-        document.getElementById("approvals-tab").classList.add('active');
-      });
-
-      document.getElementById("addRoleBtn").addEventListener("click", () => {
-        addRoleModal.style.display = "flex";
-        currentRoleId = null;
-        addRoleForm.reset();
-      });
-
-      cancelAddRole.addEventListener("click", () => {
-        addRoleModal.style.display = "none";
-      });
-
-      cancelDelete.addEventListener("click", () => {
-        deleteModal.style.display = "none";
-      });
-
-      addRoleForm.addEventListener("submit", function(e) {
-        e.preventDefault();
-        const roleName = document.getElementById("roleName").value;
-        const userId = document.getElementById("userId").value;
-        const approvalRights = document.getElementById("approvalRights").value;
-        
-        if (!roleName || !userId || !approvalRights) {
-          alert("Please fill in all fields.");
-          return;
-        }
-        
-        if (currentRoleId) {
-          // Update existing role
-          const role = rolesApprovals.find(r => r.role_id == currentRoleId);
-          if (role) {
-            role.role_name = roleName;
-            role.user_id = userId;
-            role.approval_rights = approvalRights;
-            role.last_action_date = new Date().toISOString().split('T')[0];
-          }
-        } else {
-          // Add new role to the list
-          const newRole = {
-            role_id: rolesApprovals.length + 1,
-            role_name: roleName,
-            user_id: userId,
-            approval_rights: approvalRights,
-            last_action_date: new Date().toISOString().split('T')[0]
-          };
-          
-          rolesApprovals.push(newRole);
-        }
-        
-        renderApprovals(rolesApprovals);
-        
-        // In a real application, this would send the data to the server
-        alert(currentRoleId ? "Role updated successfully!" : "Role added successfully!");
-        addRoleModal.style.display = "none";
-        addRoleForm.reset();
-      });
-
-      document.getElementById('confirmDelete').addEventListener('click', () => {
-        rolesApprovals = rolesApprovals.filter(r => r.role_id != currentRoleId);
-        renderApprovals(rolesApprovals);
-        deleteModal.style.display = "none";
-        alert(`Role #${currentRoleId} has been deleted.`);
-      });
-
-      // Close modals when clicking outside
-      window.addEventListener("click", (e) => {
-        if (e.target === addRoleModal) {
-          addRoleModal.style.display = "none";
-        }
-        if (e.target === deleteModal) {
-          deleteModal.style.display = "none";
-        }
-      });
-
-      // Generate report
-      document.getElementById("generateReportBtn").addEventListener("click", () => {
-        // Simulate report generation
-        alert("Generating cash flow report. This may take a few moments...");
-        
-        // Simulate some report generation actions
-        setTimeout(() => {
-          alert("Cash flow report generated successfully!");
-        }, 2000);
-      });
-
-      // Export report
-      document.getElementById("exportReportBtn").addEventListener("click", () => {
-        // In a real application, this would generate and download a report
-        alert("Report exported successfully!");
-      });
-
-      // Forecast
-      document.getElementById("forecastBtn").addEventListener("click", () => {
-        // Simulate forecasting
-        alert("Running forecast analysis. This may take a few moments...");
-        
-        // Simulate some forecasting actions
-        setTimeout(() => {
-          alert("Forecast analysis completed. Updated projections are now available.");
-        }, 2000);
-      });
-
-      // Apply filters
-      document.getElementById("applyCashFlowFilters").addEventListener("click", () => {
-        const sourceFilter = document.getElementById("filterSource").value;
-        const dateFilter = document.getElementById("filterReportDate").value;
-
-        let filteredCashFlow = [...cashFlowReports];
-
-        if (sourceFilter) {
-          filteredCashFlow = filteredCashFlow.filter(c => c.inflow_source === sourceFilter);
-        }
-
-        if (dateFilter) {
-          filteredCashFlow = filteredCashFlow.filter(c => c.report_date === dateFilter);
-        }
-
-        renderCashFlowReports(filteredCashFlow);
-        initializeChart(filteredCashFlow);
-      });
-
-      document.getElementById("applyPaymentFilters").addEventListener("click", () => {
-        const methodFilter = document.getElementById("filterPaymentMethod").value;
-        const statusFilter = document.getElementById("filterPaymentStatus").value;
-        const dateFilter = document.getElementById("filterPaymentDate").value;
-
-        let filteredPayments = [...payments];
-
-        if (methodFilter) {
-          filteredPayments = filteredPayments.filter(p => p.payment_method === methodFilter);
-        }
-
-        if (statusFilter) {
-          filteredPayments = filteredPayments.filter(p => p.status === statusFilter);
-        }
-
-        if (dateFilter) {
-          filteredPayments = filteredPayments.filter(p => p.created_at === dateFilter);
-        }
-
-        renderPayments(filteredPayments);
-      });
-
-      document.getElementById("applySettlementFilters").addEventListener("click", () => {
-        const gatewayFilter = document.getElementById("filterGateway").value;
-        const statusFilter = document.getElementById("filterSettlementStatus").value;
-        const dateFilter = document.getElementById("filterSettlementDate").value;
-
-        let filteredSettlements = [...settlements];
-
-        if (gatewayFilter) {
-          filteredSettlements = filteredSettlements.filter(s => s.gateway_name === gatewayFilter);
-        }
-
-        if (statusFilter) {
-          filteredSettlements = filteredSettlements.filter(s => s.status === statusFilter);
-        }
-
-        if (dateFilter) {
-          filteredSettlements = filteredSettlements.filter(s => s.settlement_date === dateFilter);
-        }
-
-        renderSettlements(filteredSettlements);
-      });
-
-      document.getElementById("applyCollectionFilters").addEventListener("click", () => {
-        const partnerFilter = document.getElementById("filterPartner").value;
-        const statusFilter = document.getElementById("filterCollectionStatus").value;
-        const dateFilter = document.getElementById("filterCollectionDate").value;
-
-        let filteredCollections = [...collections];
-
-        if (partnerFilter) {
-          filteredCollections = filteredCollections.filter(c => c.partner_id === partnerFilter);
-        }
-
-        if (statusFilter) {
-          filteredCollections = filteredCollections.filter(c => c.status === statusFilter);
-        }
-
-        if (dateFilter) {
-          filteredCollections = filteredCollections.filter(c => c.deposit_date === dateFilter);
-        }
-
-        renderCollections(filteredCollections);
-      });
-
-      document.getElementById("applyDepositFilters").addEventListener("click", () => {
-        const bankFilter = document.getElementById("filterBank").value;
-        const statusFilter = document.getElementById("filterDepositStatus").value;
-        const dateFilter = document.getElementById("filterDepositDate").value;
-
-        let filteredDeposits = [...deposits];
-
-        if (bankFilter) {
-          filteredDeposits = filteredDeposits.filter(d => d.bank_name === bankFilter);
-        }
-
-        if (statusFilter) {
-          filteredDeposits = filteredDeposits.filter(d => d.status === statusFilter);
-        }
-
-        if (dateFilter) {
-          filteredDeposits = filteredDeposits.filter(d => d.deposit_date === dateFilter);
-        }
-
-        renderDeposits(filteredDeposits);
-      });
-
-      document.getElementById("applyRefundFilters").addEventListener("click", () => {
-        const statusFilter = document.getElementById("filterRefundStatus").value;
-        const dateFilter = document.getElementById("filterRefundDate").value;
-
-        let filteredRefunds = [...refunds];
-
-        if (statusFilter) {
-          filteredRefunds = filteredRefunds.filter(r => r.status === statusFilter);
-        }
-
-        if (dateFilter) {
-          filteredRefunds = filteredRefunds.filter(r => r.refund_date === dateFilter);
-        }
-
-        renderRefunds(filteredRefunds);
-      });
-
-      document.getElementById("applyApprovalFilters").addEventListener("click", () => {
-        const roleFilter = document.getElementById("filterRole").value;
-        const dateFilter = document.getElementById("filterApprovalDate").value;
-
-        let filteredApprovals = [...rolesApprovals];
-
-        if (roleFilter) {
-          filteredApprovals = filteredApprovals.filter(r => r.role_name === roleFilter);
-        }
-
-        if (dateFilter) {
-          filteredApprovals = filteredApprovals.filter(r => r.last_action_date === dateFilter);
-        }
-
-        renderApprovals(filteredApprovals);
-      });
+        // Add animation to table rows
+        const tableRows = document.querySelectorAll('tr');
+        tableRows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+            });
+            
+            row.addEventListener('mouseleave', function() {
+                this.style.boxShadow = 'none';
+            });
+        });
+
+        // Simulate data sync functionality
+        document.querySelector('.btn-sync').addEventListener('click', function() {
+            const button = this;
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
+            button.disabled = true;
+            
+            setTimeout(function() {
+                button.innerHTML = originalText;
+                button.disabled = false;
+                alert('Data successfully synchronized with Budget Forecasting system!');
+            }, 2000);
+        });
     </script>
 </body>
 </html>
