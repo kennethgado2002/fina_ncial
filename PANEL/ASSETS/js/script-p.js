@@ -77,8 +77,8 @@
 
         let idleTimer;         
         let countdownTimer;    
-        let countdown = 60;    
-        const idleLimit = 60000;
+        let countdown = 240;    
+        const idleLimit = 240000;
         const idleModal = document.getElementById("idleModal");
         const countdownEl = document.getElementById("countdown");
         const continueBtn = document.getElementById("continueSession");

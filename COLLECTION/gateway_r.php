@@ -3,7 +3,7 @@ session_start();
 include "../PANEL/panel.php";
 ?>
 
-    <style>
+<style>
         :root {
             --primary: #2c3e50;
             --secondary: #3498db;
@@ -607,14 +607,6 @@ include "../PANEL/panel.php";
             flex-direction: column;
         }
 
-        .filter-label {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: var(--dark);
-            font-size: 0.9rem;
-        }
-
         .filter-select {
             padding: 10px 15px;
             border: 1px solid #ddd;
@@ -739,770 +731,839 @@ include "../PANEL/panel.php";
                 grid-template-columns: 1fr;
             }
         }
-    </style>
+
+    /* Add improved styling for better organization */
+    .tab-section {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+        overflow: hidden;
+    }
+
+    .tab-header {
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+        background: #f8f9fa;
+    }
+
+    .tab-content-wrapper {
+        padding: 25px;
+    }
+
+    .data-grid {
+        display: grid;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .grid-2 {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .grid-4 {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .stat-box {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 4px solid var(--secondary);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .stat-box.matched { border-left-color: var(--matched); }
+    .stat-box.partial { border-left-color: var(--partial); }
+    .stat-box.unmatched { border-left-color: var(--unmatched); }
+    .stat-box.pending { border-left-color: var(--pending); }
+
+    .action-toolbar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 5% auto;
+        padding: 0;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 800px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    .modal-footer {
+        padding: 20px;
+        border-top: 1px solid #eee;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 15px;
+    }
+
+    .form-col {
+        flex: 1;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: var(--dark);
+    }
+
+    /* Enhanced table styles */
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    .data-table th {
+        background: #f8f9fa;
+        padding: 12px 15px;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .data-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .data-table tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    /* Improved filter section */
+    .filter-bar {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        flex-wrap: wrap;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 150px;
+    }
+
+    .filter-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--dark);
+    }
+
+    /* Keep existing responsive design */
+    @media (max-width: 768px) {
+        .form-row {
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .filter-bar {
+            flex-direction: column;
+        }
+        
+        .action-toolbar {
+            flex-direction: column;
+        }
+        
+        .data-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
 <!-- DASHBOARD MAIN CONTENT -->
 <div class="home-section">
-  <div class="text">Dashboard</div>
-            <!-- Main Content -->
-        <div class="main-content" id="main-content">
+    <div class="text">Dashboard</div>
+    
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <!-- Content Area -->
+        <div class="content">
+            <h1 class="page-title">Gateway Reconciliation</h1>
 
-            <!-- Content Area -->
-            <div class="content">
-                <h1 class="page-title">Gateway Reconciliation</h1>
+            <!-- Dashboard Cards - Keep existing -->
+            <div class="dashboard-cards">
+                <div class="dashboard-card" onclick="switchTab('upload')">
+                    <div class="card-icon blue">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Files to Process</h3>
+                    <p>4</p>
+                    <small>Gateway reports pending</small>
+                </div>
+                <div class="dashboard-card" onclick="switchTab('matching')">
+                    <div class="card-icon green">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>Matched</h3>
+                    <p>142</p>
+                    <small>Transactions this month</small>
+                </div>
+                <div class="dashboard-card" onclick="switchTab('discrepancy')">
+                    <div class="card-icon orange">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Discrepancies</h3>
+                    <p>18</p>
+                    <small>Require attention</small>
+                </div>
+                <div class="dashboard-card" onclick="switchTab('settlement')">
+                    <div class="card-icon purple">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3>Settlements</h3>
+                    <p>₱425,750</p>
+                    <small>Pending payout</small>
+                </div>
+            </div>
 
-                <!-- Dashboard Cards -->
-                <div class="dashboard-cards">
-                    <div class="dashboard-card" onclick="switchTab('upload')">
-                        <div class="card-icon blue">
+            <!-- Tabs Navigation -->
+            <div class="tabs">
+                <div class="tab active" data-tab="upload">Gateway Upload</div>
+                <div class="tab" data-tab="matching">Transaction Matching</div>
+                <div class="tab" data-tab="discrepancy">Discrepancy Report</div>
+                <div class="tab" data-tab="settlement">Settlement Status</div>
+            </div>
+
+            <!-- Gateway Upload Tab -->
+            <div class="tab-section">
+                <div class="tab-header">
+                    <h2 class="card-title">Upload Gateway Settlement Files</h2>
+                </div>
+                <div class="tab-content-wrapper">
+                    <!-- Gateway Selection -->
+                    <div class="gateway-selector">
+                        <div class="gateway-card" onclick="selectGateway('gcash')">
+                            <div class="gateway-icon gcash">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <h3>GCash</h3>
+                            <p>Upload CSV or API integration</p>
+                        </div>
+                        <div class="gateway-card" onclick="selectGateway('paymaya')">
+                            <div class="gateway-icon paymaya" style="background-color: #00a2ff;">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <h3>PayMaya</h3>
+                            <p>Upload CSV or API integration</p>
+                        </div>
+                        <div class="gateway-card" onclick="selectGateway('paypal')">
+                            <div class="gateway-icon paypal">
+                                <i class="fab fa-paypal"></i>
+                            </div>
+                            <h3>PayPal</h3>
+                            <p>Upload CSV or API integration</p>
+                        </div>
+                    </div>
+
+                    <!-- Upload Area -->
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">
                             <i class="fas fa-cloud-upload-alt"></i>
                         </div>
-                        <h3>Files to Process</h3>
-                        <p>4</p>
-                        <small>Gateway reports pending</small>
+                        <h3 class="upload-text">Drag & Drop Gateway Report Files</h3>
+                        <p class="upload-subtext">Supported formats: CSV, XLSX (Max: 10MB)</p>
+                        <button class="btn btn-primary" id="browseFiles">
+                            <i class="fas fa-folder-open"></i> Browse Files
+                        </button>
+                        <input type="file" id="fileInput" style="display: none;" accept=".csv,.xlsx,.xls">
                     </div>
-                    <div class="dashboard-card" onclick="switchTab('matching')">
-                        <div class="card-icon green">
-                            <i class="fas fa-check-circle"></i>
+
+                    <!-- Filters -->
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <span class="filter-label">Date Range</span>
+                            <input type="date" class="filter-select" id="uploadStartDate" value="2025-09-01">
                         </div>
-                        <h3>Matched</h3>
-                        <p>142</p>
-                        <small>Transactions this month</small>
-                    </div>
-                    <div class="dashboard-card" onclick="switchTab('discrepancy')">
-                        <div class="card-icon orange">
-                            <i class="fas fa-exclamation-triangle"></i>
+                        <div class="filter-group">
+                            <span class="filter-label">To</span>
+                            <input type="date" class="filter-select" id="uploadEndDate" value="2025-09-09">
                         </div>
-                        <h3>Discrepancies</h3>
-                        <p>18</p>
-                        <small>Require attention</small>
-                    </div>
-                    <div class="dashboard-card" onclick="switchTab('settlement')">
-                        <div class="card-icon purple">
-                            <i class="fas fa-money-bill-wave"></i>
+                        <div class="filter-group">
+                            <span class="filter-label">Gateway</span>
+                            <select class="filter-select" id="gatewayFilter">
+                                <option value="">All Gateways</option>
+                                <option value="gcash">GCash</option>
+                                <option value="paymaya">PayMaya</option>
+                                <option value="paypal">PayPal</option>
+                            </select>
                         </div>
-                        <h3>Settlements</h3>
-                        <p>₱425,750</p>
-                        <small>Pending payout</small>
-                    </div>
-                </div>
-
-                <!-- Tabs -->
-                <div class="tabs">
-                    <div class="tab active" data-tab="upload">Gateway Upload</div>
-                    <div class="tab" data-tab="matching">Transaction Matching</div>
-                    <div class="tab" data-tab="discrepancy">Discrepancy Report</div>
-                    <div class="tab" data-tab="settlement">Settlement Status</div>
-                </div>
-
-                <!-- Gateway Upload Tab -->
-                <div class="tab-content active" id="upload-tab">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Upload Gateway Settlement Files</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="gateway-selector">
-                                <div class="gateway-card" onclick="selectGateway('paypal')">
-                                    <div class="gateway-icon paypal">
-                                        <i class="fab fa-paypal"></i>
-                                    </div>
-                                    <h3>PayPal</h3>
-                                    <p>Upload CSV or API integration</p>
-                                </div>
-                                <div class="gateway-card" onclick="selectGateway('stripe')">
-                                    <div class="gateway-icon stripe">
-                                        <i class="fab fa-stripe"></i>
-                                    </div>
-                                    <h3>Stripe</h3>
-                                    <p>Upload CSV or API integration</p>
-                                </div>
-                                <div class="gateway-card" onclick="selectGateway('gcash')">
-                                    <div class="gateway-icon gcash">
-                                        <i class="fas fa-mobile-alt"></i>
-                                    </div>
-                                    <h3>GCash</h3>
-                                    <p>Upload CSV or API integration</p>
-                                </div>
-                                <div class="gateway-card" onclick="selectGateway('paymongo')">
-                                    <div class="gateway-icon paymongo">
-                                        <i class="fas fa-credit-card"></i>
-                                    </div>
-                                    <h3>PayMongo</h3>
-                                    <p>Upload CSV or API integration</p>
-                                </div>
-                            </div>
-
-                            <div class="upload-area" id="uploadArea">
-                                <div class="upload-icon">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                </div>
-                                <h3 class="upload-text">Drag & Drop Gateway Report Files</h3>
-                                <p class="upload-subtext">Supported formats: CSV, XLSX, or connect via API</p>
-                                <button class="btn btn-primary" id="browseFiles">
-                                    <i class="fas fa-folder-open"></i> Browse Files
-                                </button>
-                                <input type="file" id="fileInput" style="display: none;" accept=".csv,.xlsx,.xls">
-                            </div>
-
-                            <div class="filter-section">
-                                <div class="filter-item">
-                                    <span class="filter-label">Date Range</span>
-                                    <input type="date" class="filter-select" id="uploadStartDate" value="2025-09-01">
-                                </div>
-                                <div class="filter-item">
-                                    <span class="filter-label">&nbsp;</span>
-                                    <input type="date" class="filter-select" id="uploadEndDate" value="2025-09-09">
-                                </div>
-                                <div class="filter-item">
-                                    <span class="filter-label">Gateway</span>
-                                    <select class="filter-select" id="gatewayFilter">
-                                        <option value="">All Gateways</option>
-                                        <option value="paypal">PayPal</option>
-                                        <option value="stripe">Stripe</option>
-                                        <option value="gcash">GCash</option>
-                                        <option value="paymongo">PayMongo</option>
-                                    </select>
-                                </div>
-                                <div class="filter-item">
-                                    <span class="filter-label">Status</span>
-                                    <select class="filter-select" id="uploadStatusFilter">
-                                        <option value="">All Status</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="processing">Processing</option>
-                                        <option value="completed">Completed</option>
-                                        <option value="error">Error</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <h3 style="margin-bottom: 15px; font-family: 'Montserrat', sans-serif;">Recent Uploads</h3>
-                            <div class="table-responsive">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Filename</th>
-                                            <th>Gateway</th>
-                                            <th>Date Range</th>
-                                            <th>Transactions</th>
-                                            <th>Uploaded</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>paypal_settlement_2025-09-08.csv</td>
-                                            <td>PayPal</td>
-                                            <td>Sep 1 - Sep 7, 2025</td>
-                                            <td>42</td>
-                                            <td>2025-09-08 14:30</td>
-                                            <td><span class="status status-matched">Processed</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-download btn-sm"><i class="fas fa-download"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>stripe_payouts_2025-09-07.csv</td>
-                                            <td>Stripe</td>
-                                            <td>Sep 1 - Sep 6, 2025</td>
-                                            <td>38</td>
-                                            <td>2025-09-07 11:15</td>
-                                            <td><span class="status status-matched">Processed</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-download btn-sm"><i class="fas fa-download"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>gcash_transactions_2025-09-09.csv</td>
-                                            <td>GCash</td>
-                                            <td>Sep 1 - Sep 8, 2025</td>
-                                            <td>56</td>
-                                            <td>2025-09-09 09:45</td>
-                                            <td><span class="status status-pending">Processing</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-download btn-sm"><i class="fas fa-download"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>paymongo_settlement_2025-09-06.csv</td>
-                                            <td>PayMongo</td>
-                                            <td>Aug 30 - Sep 5, 2025</td>
-                                            <td>29</td>
-                                            <td>2025-09-06 16:20</td>
-                                            <td><span class="status status-matched">Processed</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-download btn-sm"><i class="fas fa-download"></i></button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div class="filter-group">
+                            <span class="filter-label">Status</span>
+                            <select class="filter-select" id="uploadStatusFilter">
+                                <option value="">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="completed">Completed</option>
+                                <option value="error">Error</option>
+                            </select>
                         </div>
                     </div>
-                </div>
 
-                <!-- Transaction Matching Tab -->
-                <div class="tab-content" id="matching-tab">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Transaction Matching Dashboard</h2>
-                            <div>
-                                <button class="btn btn-primary" id="runMatching"><i class="fas fa-cogs"></i> Run Auto-Match</button>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="matching-stats">
-                                <div class="stat-card">
-                                    <div class="stat-value">158</div>
-                                    <div class="stat-label">Total Transactions</div>
-                                </div>
-                                <div class="stat-card">
-                                    <div class="stat-value">142</div>
-                                    <div class="stat-label">Matched</div>
-                                </div>
-                                <div class="stat-card">
-                                    <div class="stat-value">12</div>
-                                    <div class="stat-label">Partial Match</div>
-                                </div>
-                                <div class="stat-card">
-                                    <div class="stat-value">4</div>
-                                    <div class="stat-label">Unmatched</div>
-                                </div>
-                            </div>
-
-                            <div class="filter-section">
-                                <div class="filter-item">
-                                    <span class="filter-label">Matching Status</span>
-                                    <select class="filter-select" id="matchingStatusFilter">
-                                        <option value="">All Status</option>
-                                        <option value="matched">Matched</option>
-                                        <option value="partial">Partial Match</option>
-                                        <option value="unmatched">Unmatched</option>
-                                    </select>
-                                </div>
-                                <div class="filter-item">
-                                    <span class="filter-label">Gateway</span>
-                                    <select class="filter-select" id="matchingGatewayFilter">
-                                        <option value="">All Gateways</option>
-                                        <option value="paypal">PayPal</option>
-                                        <option value="stripe">Stripe</option>
-                                        <option value="gcash">GCash</option>
-                                        <option value="paymongo">PayMongo</option>
-                                    </select>
-                                </div>
-                                <div class="filter-item">
-                                    <span class="filter-label">Date Range</span>
-                                    <input type="date" class="filter-select" id="matchingStartDate" value="2025-09-01">
-                                </div>
-                                <div class="filter-item">
-                                    <span class="filter-label">&nbsp;</span>
-                                    <input type="date" class="filter-select" id="matchingEndDate" value="2025-09-09">
-                                </div>
-                            </div>
-
-                            <div class="search-box">
-                                <i class="fas fa-search"></i>
-                                <input type="text" id="matchingSearch" placeholder="Search Transaction ID, Order ID, or Customer...">
-                                <button class="btn btn-primary">Search</button>
-                            </div>
-
-                            <div class="table-responsive">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Gateway Txn ID</th>
-                                            <th>Order ID</th>
-                                            <th>Customer</th>
-                                            <th>Gateway Amount</th>
-                                            <th>System Amount</th>
-                                            <th>Date</th>
-                                            <th>Gateway</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>PYPL-2025-001</td>
-                                            <td>ORD-2025-085</td>
-                                            <td>Maria Santos</td>
-                                            <td>₱12,500.00</td>
-                                            <td>₱12,500.00</td>
-                                            <td>2025-09-01</td>
-                                            <td>PayPal</td>
-                                            <td><span class="status status-matched">Matched</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm" onclick="openComparisonModal()"><i class="fas fa-eye"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>STRP-2025-002</td>
-                                            <td>ORD-2025-086</td>
-                                            <td>Juan Dela Cruz</td>
-                                            <td>₱8,750.00</td>
-                                            <td>₱8,750.00</td>
-                                            <td>2025-09-02</td>
-                                            <td>Stripe</td>
-                                            <td><span class="status status-matched">Matched</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm" onclick="openComparisonModal()"><i class="fas fa-eye"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>GCSH-2025-003</td>
-                                            <td>ORD-2025-087</td>
-                                            <td>Ana Reyes</td>
-                                            <td>₱5,200.00</td>
-                                            <td>₱5,250.00</td>
-                                            <td>2025-09-03</td>
-                                            <td>GCash</td>
-                                            <td><span class="status status-partial">Partial</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm" onclick="openComparisonModal()"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-process btn-sm"><i class="fas fa-cog"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>PMGO-2025-004</td>
-                                            <td>ORD-2025-088</td>
-                                            <td>Carlos Lim</td>
-                                            <td>₱3,800.00</td>
-                                            <td>₱3,800.00</td>
-                                            <td>2025-09-04</td>
-                                            <td>PayMongo</td>
-                                            <td><span class="status status-matched">Matched</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm" onclick="openComparisonModal()"><i class="fas fa-eye"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>PYPL-2025-005</td>
-                                            <td>N/A</td>
-                                            <td>Elena Torres</td>
-                                            <td>₱4,500.00</td>
-                                            <td>N/A</td>
-                                            <td>2025-09-05</td>
-                                            <td>PayPal</td>
-                                            <td><span class="status status-unmatched">Unmatched</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm" onclick="openComparisonModal()"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-process btn-sm"><i class="fas fa-cog"></i></button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Discrepancy Report Tab -->
-                <div class="tab-content" id="discrepancy-tab">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Discrepancy Report</h2>
-                            <div>
-                                <button class="btn btn-download"><i class="fas fa-download"></i> Export Report</button>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="filter-section">
-                                <div class="filter-item">
-                                    <span class="filter-label">Discrepancy Type</span>
-                                    <select class="filter-select" id="discrepancyTypeFilter">
-                                        <option value="">All Types</option>
-                                        <option value="unmatched">Unmatched</option>
-                                        <option value="partial">Partial Match</option>
-                                        <option value="duplicate">Duplicate</option>
-                                        <option value="failed">Failed Payment</option>
-                                        <option value="dispute">Dispute/Chargeback</option>
-                                    </select>
-                                </div>
-                                <div class="filter-item">
-                                    <span class="filter-label">Gateway</span>
-                                    <select class="filter-select" id="discrepancyGatewayFilter">
-                                        <option value="">All Gateways</option>
-                                        <option value="paypal">PayPal</option>
-                                        <option value="stripe">Stripe</option>
-                                        <option value="gcash">GCash</option>
-                                        <option value="paymongo">PayMongo</option>
-                                    </select>
-                                </div>
-                                <div class="filter-item">
-                                    <span class="filter-label">Date Range</span>
-                                    <input type="date" class="filter-select" id="discrepancyStartDate" value="2025-09-01">
-                                </div>
-                                <div class="filter-item">
-                                    <span class="filter-label">&nbsp;</span>
-                                    <input type="date" class="filter-select" id="discrepancyEndDate" value="2025-09-09">
-                                </div>
-                            </div>
-
-                            <div class="table-responsive">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Discrepancy ID</th>
-                                            <th>Type</th>
-                                            <th>Gateway Txn ID</th>
-                                            <th>Order ID</th>
-                                            <th>Gateway Amount</th>
-                                            <th>System Amount</th>
-                                            <th>Date</th>
-                                            <th>Gateway</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>DISC-2025-001</td>
-                                            <td>Unmatched</td>
-                                            <td>PYPL-2025-005</td>
-                                            <td>N/A</td>
-                                            <td>₱4,500.00</td>
-                                            <td>N/A</td>
-                                            <td>2025-09-05</td>
-                                            <td>PayPal</td>
-                                            <td><span class="status status-unmatched">Pending</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-process btn-sm"><i class="fas fa-cog"></i> Resolve</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>DISC-2025-002</td>
-                                            <td>Partial Match</td>
-                                            <td>GCSH-2025-003</td>
-                                            <td>ORD-2025-087</td>
-                                            <td>₱5,200.00</td>
-                                            <td>₱5,250.00</td>
-                                            <td>2025-09-03</td>
-                                            <td>GCash</td>
-                                            <td><span class="status status-partial">Pending</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-process btn-sm"><i class="fas fa-cog"></i> Resolve</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>DISC-2025-003</td>
-                                            <td>Duplicate</td>
-                                            <td>STRP-2025-008</td>
-                                            <td>ORD-2025-092</td>
-                                            <td>₱7,500.00</td>
-                                            <td>₱7,500.00</td>
-                                            <td>2025-09-07</td>
-                                            <td>Stripe</td>
-                                            <td><span class="status status-unmatched">Pending</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-process btn-sm"><i class="fas fa-cog"></i> Resolve</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>DISC-2025-004</td>
-                                            <td>Failed Payment</td>
-                                            <td>PMGO-2025-012</td>
-                                            <td>ORD-2025-095</td>
-                                            <td>₱0.00</td>
-                                            <td>₱3,200.00</td>
-                                            <td>2025-09-08</td>
-                                            <td>PayMongo</td>
-                                            <td><span class="status status-unmatched">Pending</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-process btn-sm"><i class="fas fa-cog"></i> Resolve</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>DISC-2025-005</td>
-                                            <td>Dispute</td>
-                                            <td>PYPL-2025-015</td>
-                                            <td>ORD-2025-088</td>
-                                            <td>-₱2,500.00</td>
-                                            <td>₱2,500.00</td>
-                                            <td>2025-09-06</td>
-                                            <td>PayPal</td>
-                                            <td><span class="status status-dispute">Under Review</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-process btn-sm"><i class="fas fa-cog"></i> Resolve</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Settlement Status Tab -->
-                <div class="tab-content" id="settlement-tab">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Settlement Status</h2>
-                            <div>
-                                <button class="btn btn-download"><i class="fas fa-download"></i> Export</button>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="settlement-cards">
-                                <div class="settlement-card">
-                                    <div class="settlement-header">
-                                        <div class="settlement-title">PayPal</div>
-                                        <i class="fab fa-paypal" style="color: #003087;"></i>
-                                    </div>
-                                    <div class="settlement-amount">₱125,500.00</div>
-                                    <div class="settlement-details">
-                                        <p>Pending Payout: ₱125,500.00</p>
-                                        <p>Next Settlement: 2025-09-10</p>
-                                        <p>Status: <span style="color: #27ae60;">On Track</span></p>
-                                    </div>
-                                </div>
-                                
-                                <div class="settlement-card">
-                                    <div class="settlement-header">
-                                        <div class="settlement-title">Stripe</div>
-                                        <i class="fab fa-stripe" style="color: #6772e5;"></i>
-                                    </div>
-                                    <div class="settlement-amount">₱98,750.00</div>
-                                    <div class="settlement-details">
-                                        <p>Pending Payout: ₱98,750.00</p>
-                                        <p>Next Settlement: 2025-09-11</p>
-                                        <p>Status: <span style="color: #27ae60;">On Track</span></p>
-                                    </div>
-                                </div>
-                                
-                                <div class="settlement-card">
-                                    <div class="settlement-header">
-                                        <div class="settlement-title">GCash</div>
-                                        <i class="fas fa-mobile-alt" style="color: #0033a0;"></i>
-                                    </div>
-                                    <div class="settlement-amount">₱156,300.00</div>
-                                    <div class="settlement-details">
-                                        <p>Pending Payout: ₱156,300.00</p>
-                                        <p>Next Settlement: 2025-09-09</p>
-                                        <p>Status: <span style="color: #f39c12;">Delayed</span></p>
-                                    </div>
-                                </div>
-                                
-                                <div class="settlement-card">
-                                    <div class="settlement-header">
-                                        <div class="settlement-title">PayMongo</div>
-                                        <i class="fas fa-credit-card" style="color: #00a2ff;"></i>
-                                    </div>
-                                    <div class="settlement-amount">₱45,200.00</div>
-                                    <div class="settlement-details">
-                                        <p>Pending Payout: ₱45,200.00</p>
-                                        <p>Next Settlement: 2025-09-12</p>
-                                        <p>Status: <span style="color: #27ae60;">On Track</span></p>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <h3 style="margin: 30px 0 15px; font-family: 'Montserrat', sans-serif;">Settlement Timeline</h3>
-                            <div class="table-responsive">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Settlement ID</th>
-                                            <th>Gateway</th>
-                                            <th>Period</th>
-                                            <th>Total Amount</th>
-                                            <th>Fees</th>
-                                            <th>Net Amount</th>
-                                            <th>Expected Date</th>
-                                            <th>Actual Date</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>SET-2025-001</td>
-                                            <td>PayPal</td>
-                                            <td>Aug 25 - Aug 31</td>
-                                            <td>₱142,500.00</td>
-                                            <td>₱4,275.00</td>
-                                            <td>₱138,225.00</td>
-                                            <td>2025-09-03</td>
-                                            <td>2025-09-03</td>
-                                            <td><span class="status status-matched">Completed</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>SET-2025-002</td>
-                                            <td>Stripe</td>
-                                            <td>Aug 26 - Sep 1</td>
-                                            <td>₱98,750.00</td>
-                                            <td>₱2,962.50</td>
-                                            <td>₱95,787.50</td>
-                                            <td>2025-09-04</td>
-                                            <td>2025-09-04</td>
-                                            <td><span class="status status-matched">Completed</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>SET-2025-003</td>
-                                            <td>GCash</td>
-                                            <td>Aug 28 - Sep 3</td>
-                                            <td>₱125,300.00</td>
-                                            <td>₱1,253.00</td>
-                                            <td>₱124,047.00</td>
-                                            <td>2025-09-05</td>
-                                            <td>2025-09-07</td>
-                                            <td><span class="status status-partial">Delayed</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>SET-2025-004</td>
-                                            <td>PayMongo</td>
-                                            <td>Aug 30 - Sep 5</td>
-                                            <td>₱65,200.00</td>
-                                            <td>₱1,304.00</td>
-                                            <td>₱63,896.00</td>
-                                            <td>2025-09-08</td>
-                                            <td>Pending</td>
-                                            <td><span class="status status-pending">Processing</span></td>
-                                            <td>
-                                                <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                    <!-- Recent Uploads Table -->
+                    <h3 style="margin: 20px 0 15px;">Recent Uploads</h3>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Filename</th>
+                                    <th>Gateway</th>
+                                    <th>Date Range</th>
+                                    <th>Transactions</th>
+                                    <th>Uploaded</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>gcash_settlement_2025-09-08.csv</td>
+                                    <td>GCash</td>
+                                    <td>Sep 1 - Sep 7, 2025</td>
+                                    <td>56</td>
+                                    <td>2025-09-08 14:30</td>
+                                    <td><span class="status status-matched">Processed</span></td>
+                                    <td>
+                                        <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
+                                        <button class="btn btn-download btn-sm"><i class="fas fa-download"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>paymaya_payouts_2025-09-07.csv</td>
+                                    <td>PayMaya</td>
+                                    <td>Sep 1 - Sep 6, 2025</td>
+                                    <td>42</td>
+                                    <td>2025-09-07 11:15</td>
+                                    <td><span class="status status-matched">Processed</span></td>
+                                    <td>
+                                        <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
+                                        <button class="btn btn-download btn-sm"><i class="fas fa-download"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>paypal_transactions_2025-09-09.csv</td>
+                                    <td>PayPal</td>
+                                    <td>Sep 1 - Sep 8, 2025</td>
+                                    <td>38</td>
+                                    <td>2025-09-09 09:45</td>
+                                    <td><span class="status status-pending">Processing</span></td>
+                                    <td>
+                                        <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
+                                        <button class="btn btn-download btn-sm"><i class="fas fa-download"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- Footer -->
-            <div class="footer">
-                <p>&copy; 2025 Financial System - Gateway Reconciliation</p>
+            <!-- Transaction Matching Tab -->
+            <div class="tab-section" style="display: none;">
+                <div class="tab-header">
+                    <h2 class="card-title">Transaction Matching Dashboard</h2>
+                    <div class="action-toolbar">
+                        <button class="btn btn-primary" id="runMatching">
+                            <i class="fas fa-cogs"></i> Run Auto-Match
+                        </button>
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-sync"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="tab-content-wrapper">
+                    <!-- Statistics -->
+                    <div class="data-grid grid-4">
+                        <div class="stat-box matched">
+                            <h3>158</h3>
+                            <p>Total Transactions</p>
+                        </div>
+                        <div class="stat-box matched">
+                            <h3>142</h3>
+                            <p>Matched</p>
+                        </div>
+                        <div class="stat-box partial">
+                            <h3>12</h3>
+                            <p>Partial Match</p>
+                        </div>
+                        <div class="stat-box unmatched">
+                            <h3>4</h3>
+                            <p>Unmatched</p>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <span class="filter-label">Matching Status</span>
+                            <select class="filter-select" id="matchingStatusFilter">
+                                <option value="">All Status</option>
+                                <option value="matched">Matched</option>
+                                <option value="partial">Partial Match</option>
+                                <option value="unmatched">Unmatched</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <span class="filter-label">Gateway</span>
+                            <select class="filter-select" id="matchingGatewayFilter">
+                                <option value="">All Gateways</option>
+                                <option value="gcash">GCash</option>
+                                <option value="paymaya">PayMaya</option>
+                                <option value="paypal">PayPal</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <span class="filter-label">From Date</span>
+                            <input type="date" class="filter-select" id="matchingStartDate" value="2025-09-01">
+                        </div>
+                        <div class="filter-group">
+                            <span class="filter-label">To Date</span>
+                            <input type="date" class="filter-select" id="matchingEndDate" value="2025-09-09">
+                        </div>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="matchingSearch" placeholder="Search Transaction ID, Order ID, or Customer...">
+                        <button class="btn btn-primary">Search</button>
+                    </div>
+
+                    <!-- Transactions Table -->
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Gateway Txn ID</th>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Gateway Amount</th>
+                                    <th>System Amount</th>
+                                    <th>Date</th>
+                                    <th>Gateway</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>GCASH-2025-001</td>
+                                    <td>ORD-2025-085</td>
+                                    <td>Maria Santos</td>
+                                    <td>₱12,500.00</td>
+                                    <td>₱12,500.00</td>
+                                    <td>2025-09-01</td>
+                                    <td>GCash</td>
+                                    <td><span class="status status-matched">Matched</span></td>
+                                    <td>
+                                        <button class="btn btn-view btn-sm" onclick="openComparisonModal()">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>PMYA-2025-002</td>
+                                    <td>ORD-2025-086</td>
+                                    <td>Juan Dela Cruz</td>
+                                    <td>₱8,750.00</td>
+                                    <td>₱8,750.00</td>
+                                    <td>2025-09-02</td>
+                                    <td>PayMaya</td>
+                                    <td><span class="status status-matched">Matched</span></td>
+                                    <td>
+                                        <button class="btn btn-view btn-sm" onclick="openComparisonModal()">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>PYPL-2025-003</td>
+                                    <td>ORD-2025-087</td>
+                                    <td>Ana Reyes</td>
+                                    <td>₱5,200.00</td>
+                                    <td>₱5,250.00</td>
+                                    <td>2025-09-03</td>
+                                    <td>PayPal</td>
+                                    <td><span class="status status-partial">Partial</span></td>
+                                    <td>
+                                        <button class="btn btn-view btn-sm" onclick="openComparisonModal()">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-process btn-sm">
+                                            <i class="fas fa-cog"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Comparison Modal -->
-    <div id="comparisonModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Transaction Comparison</h2>
-                <span class="close" onclick="closeModal('comparisonModal')">&times;</span>
+            <!-- Discrepancy Report Tab -->
+            <div class="tab-section" style="display: none;">
+                <div class="tab-header">
+                    <h2 class="card-title">Discrepancy Report</h2>
+                    <div class="action-toolbar">
+                        <button class="btn btn-download">
+                            <i class="fas fa-download"></i> Export Report
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-cog"></i> Auto-Resolve
+                        </button>
+                    </div>
+                </div>
+                <div class="tab-content-wrapper">
+                    <!-- Filters -->
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <span class="filter-label">Discrepancy Type</span>
+                            <select class="filter-select" id="discrepancyTypeFilter">
+                                <option value="">All Types</option>
+                                <option value="unmatched">Unmatched</option>
+                                <option value="partial">Partial Match</option>
+                                <option value="duplicate">Duplicate</option>
+                                <option value="failed">Failed Payment</option>
+                                <option value="dispute">Dispute/Chargeback</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <span class="filter-label">Gateway</span>
+                            <select class="filter-select" id="discrepancyGatewayFilter">
+                                <option value="">All Gateways</option>
+                                <option value="gcash">GCash</option>
+                                <option value="paymaya">PayMaya</option>
+                                <option value="paypal">PayPal</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <span class="filter-label">From Date</span>
+                            <input type="date" class="filter-select" id="discrepancyStartDate" value="2025-09-01">
+                        </div>
+                        <div class="filter-group">
+                            <span class="filter-label">To Date</span>
+                            <input type="date" class="filter-select" id="discrepancyEndDate" value="2025-09-09">
+                        </div>
+                    </div>
+
+                    <!-- Discrepancies Table -->
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Discrepancy ID</th>
+                                    <th>Type</th>
+                                    <th>Gateway Txn ID</th>
+                                    <th>Order ID</th>
+                                    <th>Gateway Amount</th>
+                                    <th>System Amount</th>
+                                    <th>Date</th>
+                                    <th>Gateway</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>DISC-2025-001</td>
+                                    <td>Unmatched</td>
+                                    <td>GCASH-2025-005</td>
+                                    <td>N/A</td>
+                                    <td>₱4,500.00</td>
+                                    <td>N/A</td>
+                                    <td>2025-09-05</td>
+                                    <td>GCash</td>
+                                    <td><span class="status status-unmatched">Pending</span></td>
+                                    <td>
+                                        <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
+                                        <button class="btn btn-process btn-sm"><i class="fas fa-cog"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>DISC-2025-002</td>
+                                    <td>Partial Match</td>
+                                    <td>PMYA-2025-003</td>
+                                    <td>ORD-2025-087</td>
+                                    <td>₱5,200.00</td>
+                                    <td>₱5,250.00</td>
+                                    <td>2025-09-03</td>
+                                    <td>PayMaya</td>
+                                    <td><span class="status status-partial">Pending</span></td>
+                                    <td>
+                                        <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
+                                        <button class="btn btn-process btn-sm"><i class="fas fa-cog"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
-                <div class="form-row">
-                    <div class="form-col">
-                        <div class="form-group">
-                            <label class="form-label">Gateway Transaction ID</label>
-                            <p>PYPL-2025-001</p>
-                        </div>
-                    </div>
-                    <div class="form-col">
-                        <div class="form-group">
-                            <label class="form-label">Order ID</label>
-                            <p>ORD-2025-085</p>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="form-row">
-                    <div class="form-col">
-                        <div class="form-group">
-                            <label class="form-label">Customer</label>
-                            <p>Maria Santos</p>
+            <!-- Settlement Status Tab -->
+            <div class="tab-section" style="display: none;">
+                <div class="tab-header">
+                    <h2 class="card-title">Settlement Status</h2>
+                    <div class="action-toolbar">
+                        <button class="btn btn-download">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-sync"></i> Refresh Status
+                        </button>
+                    </div>
+                </div>
+                <div class="tab-content-wrapper">
+                    <!-- Settlement Cards -->
+                    <div class="data-grid grid-3">
+                        <div class="settlement-card">
+                            <div class="settlement-header">
+                                <div class="settlement-title">GCash</div>
+                                <i class="fas fa-mobile-alt" style="color: #0033a0;"></i>
+                            </div>
+                            <div class="settlement-amount">₱156,300.00</div>
+                            <div class="settlement-details">
+                                <p>Pending Payout: ₱156,300.00</p>
+                                <p>Next Settlement: 2025-09-09</p>
+                                <p>Status: <span style="color: #f39c12;">Delayed</span></p>
+                            </div>
+                        </div>
+                        
+                        <div class="settlement-card">
+                            <div class="settlement-header">
+                                <div class="settlement-title">PayMaya</div>
+                                <i class="fas fa-credit-card" style="color: #00a2ff;"></i>
+                            </div>
+                            <div class="settlement-amount">₱98,750.00</div>
+                            <div class="settlement-details">
+                                <p>Pending Payout: ₱98,750.00</p>
+                                <p>Next Settlement: 2025-09-11</p>
+                                <p>Status: <span style="color: #27ae60;">On Track</span></p>
+                            </div>
+                        </div>
+                        
+                        <div class="settlement-card">
+                            <div class="settlement-header">
+                                <div class="settlement-title">PayPal</div>
+                                <i class="fab fa-paypal" style="color: #003087;"></i>
+                            </div>
+                            <div class="settlement-amount">₱125,500.00</div>
+                            <div class="settlement-details">
+                                <p>Pending Payout: ₱125,500.00</p>
+                                <p>Next Settlement: 2025-09-10</p>
+                                <p>Status: <span style="color: #27ae60;">On Track</span></p>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-col">
-                        <div class="form-group">
-                            <label class="form-label">Gateway</label>
-                            <p>PayPal</p>
-                        </div>
+
+                    <!-- Settlement Timeline -->
+                    <h3 style="margin: 30px 0 15px;">Settlement Timeline</h3>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Settlement ID</th>
+                                    <th>Gateway</th>
+                                    <th>Period</th>
+                                    <th>Total Amount</th>
+                                    <th>Fees</th>
+                                    <th>Net Amount</th>
+                                    <th>Expected Date</th>
+                                    <th>Actual Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>SET-2025-001</td>
+                                    <td>GCash</td>
+                                    <td>Aug 25 - Aug 31</td>
+                                    <td>₱142,500.00</td>
+                                    <td>₱4,275.00</td>
+                                    <td>₱138,225.00</td>
+                                    <td>2025-09-03</td>
+                                    <td>2025-09-03</td>
+                                    <td><span class="status status-matched">Completed</span></td>
+                                    <td>
+                                        <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>SET-2025-002</td>
+                                    <td>PayMaya</td>
+                                    <td>Aug 26 - Sep 1</td>
+                                    <td>₱98,750.00</td>
+                                    <td>₱2,962.50</td>
+                                    <td>₱95,787.50</td>
+                                    <td>2025-09-04</td>
+                                    <td>2025-09-04</td>
+                                    <td><span class="status status-matched">Completed</span></td>
+                                    <td>
+                                        <button class="btn btn-view btn-sm"><i class="fas fa-eye"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-
-                <h3 class="form-label">Transaction Comparison</h3>
-                <div class="table-responsive">
-                    <table class="comparison-table">
-                        <thead>
-                            <tr>
-                                <th>Field</th>
-                                <th>Gateway Data</th>
-                                <th>System Data</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="match-exact">
-                                <td>Transaction ID</td>
-                                <td>PYPL-2025-001</td>
-                                <td>PYPL-2025-001</td>
-                                <td>Exact Match</td>
-                            </tr>
-                            <tr class="match-exact">
-                                <td>Order ID</td>
-                                <td>ORD-2025-085</td>
-                                <td>ORD-2025-085</td>
-                                <td>Exact Match</td>
-                            </tr>
-                            <tr class="match-exact">
-                                <td>Amount</td>
-                                <td>₱12,500.00</td>
-                                <td>₱12,500.00</td>
-                                <td>Exact Match</td>
-                            </tr>
-                            <tr class="match-exact">
-                                <td>Date</td>
-                                <td>2025-09-01 14:30</td>
-                                <td>2025-09-01 14:32</td>
-                                <td>Exact Match</td>
-                            </tr>
-                            <tr class="match-exact">
-                                <td>Customer Email</td>
-                                <td>maria.santos@example.com</td>
-                                <td>maria.santos@example.com</td>
-                                <td>Exact Match</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Matching Summary</label>
-                    <div style="padding: 15px; background: #f8f9fa; border-radius: 8px;">
-                        <p><strong>Status:</strong> <span class="status status-matched">Fully Matched</span></p>
-                        <p><strong>Confidence Score:</strong> 100%</p>
-                        <p><strong>Auto-matched:</strong> Yes</p>
-                        <p><strong>GL Posting:</strong> Cash Clearing Account #1010</p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('comparisonModal')">Close</button>
-                <button type="button" class="btn btn-primary">Post to GL</button>
             </div>
         </div>
-    </div>
 
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; 2025 Financial System - Gateway Reconciliation</p>
+        </div>
+    </div>
+</div>
+
+<!-- Comparison Modal -->
+<div id="comparisonModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Transaction Comparison</h2>
+            <span class="close" onclick="closeModal('comparisonModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label class="form-label">Gateway Transaction ID</label>
+                        <p>GCASH-2025-001</p>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label class="form-label">Order ID</label>
+                        <p>ORD-2025-085</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label class="form-label">Customer</label>
+                        <p>Maria Santos</p>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label class="form-label">Gateway</label>
+                        <p>GCash</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="form-label">Transaction Comparison</h3>
+            <div class="table-responsive">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Gateway Data</th>
+                            <th>System Data</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="match-exact">
+                            <td>Transaction ID</td>
+                            <td>GCASH-2025-001</td>
+                            <td>GCASH-2025-001</td>
+                            <td>Exact Match</td>
+                        </tr>
+                        <tr class="match-exact">
+                            <td>Order ID</td>
+                            <td>ORD-2025-085</td>
+                            <td>ORD-2025-085</td>
+                            <td>Exact Match</td>
+                        </tr>
+                        <tr class="match-exact">
+                            <td>Amount</td>
+                            <td>₱12,500.00</td>
+                            <td>₱12,500.00</td>
+                            <td>Exact Match</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Matching Summary</label>
+                <div style="padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                    <p><strong>Status:</strong> <span class="status status-matched">Fully Matched</span></p>
+                    <p><strong>Confidence Score:</strong> 100%</p>
+                    <p><strong>Auto-matched:</strong> Yes</p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('comparisonModal')">Close</button>
+            <button type="button" class="btn btn-primary">Post to GL</button>
+        </div>
+    </div>
 </div>
 
 <script src="../PANEL/ASSETS/js/script-p.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-
-        // Tab functionality
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Enhanced Tab Functionality
+    function initializeTabs() {
         const tabs = document.querySelectorAll('.tab');
+        const tabSections = document.querySelectorAll('.tab-section');
+        
+        // Show first tab by default
+        if (tabSections.length > 0) {
+            tabSections[0].style.display = 'block';
+        }
+
         tabs.forEach(tab => {
             tab.addEventListener('click', function() {
                 // Remove active class from all tabs
@@ -1511,44 +1572,59 @@ include "../PANEL/panel.php";
                 // Add active class to clicked tab
                 this.classList.add('active');
                 
-                // Hide all tab content
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
+                // Hide all tab sections
+                tabSections.forEach(section => {
+                    section.style.display = 'none';
                 });
                 
-                // Show the selected tab content
+                // Show the selected tab section
                 const tabId = this.getAttribute('data-tab');
-                document.getElementById(`${tabId}-tab`).classList.add('active');
+                const targetSection = document.querySelector(`.tab-section:nth-child(${Array.from(tabs).indexOf(this) + 4})`);
+                if (targetSection) {
+                    targetSection.style.display = 'block';
+                }
             });
         });
+    }
 
-        // Switch tab function for dashboard cards
-        function switchTab(tabName) {
-            tabs.forEach(t => t.classList.remove('active'));
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-            
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            document.getElementById(`${tabName}-tab`).classList.add('active');
+    // Switch tab function for dashboard cards
+    function switchTab(tabName) {
+        const tabs = document.querySelectorAll('.tab');
+        const tabSections = document.querySelectorAll('.tab-section');
+        
+        tabs.forEach(t => t.classList.remove('active'));
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        
+        tabSections.forEach(section => {
+            section.style.display = 'none';
+        });
+        
+        const targetIndex = Array.from(tabs).findIndex(tab => tab.getAttribute('data-tab') === tabName);
+        if (targetIndex !== -1 && tabSections[targetIndex]) {
+            tabSections[targetIndex].style.display = 'block';
         }
+    }
 
-        // Gateway selection
-        function selectGateway(gateway) {
-            // Remove selected class from all gateways
-            document.querySelectorAll('.gateway-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            
-            // Add selected class to clicked gateway
-            event.currentTarget.classList.add('selected');
-            
-            // Update upload area text
-            const uploadText = document.querySelector('.upload-text');
-            uploadText.textContent = `Upload ${gateway.charAt(0).toUpperCase() + gateway.slice(1)} Settlement File`;
-        }
+    // Gateway selection
+    function selectGateway(gateway) {
+        // Remove selected class from all gateways
+        document.querySelectorAll('.gateway-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        // Add selected class to clicked gateway
+        event.currentTarget.classList.add('selected');
+        
+        // Update upload area text
+        const uploadText = document.querySelector('.upload-text');
+        const gatewayName = gateway.charAt(0).toUpperCase() + gateway.slice(1);
+        uploadText.textContent = `Upload ${gatewayName} Settlement File`;
+    }
 
-        // File upload functionality
+    // File upload functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeTabs();
+        
         document.getElementById('browseFiles').addEventListener('click', function() {
             document.getElementById('fileInput').click();
         });
@@ -1556,86 +1632,126 @@ include "../PANEL/panel.php";
         document.getElementById('fileInput').addEventListener('change', function() {
             if (this.files.length > 0) {
                 const fileName = this.files[0].name;
-                alert(`File "${fileName}" selected for upload. Click Process to continue.`);
+                showNotification(`File "${fileName}" selected for upload.`, 'success');
             }
         });
 
         // Drag and drop functionality
         const uploadArea = document.getElementById('uploadArea');
-        uploadArea.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.style.borderColor = var(--secondary);
-            this.style.backgroundColor = '#f8f9fa';
-        });
+        if (uploadArea) {
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.borderColor = 'var(--secondary)';
+                this.style.backgroundColor = '#f8f9fa';
+            });
 
-        uploadArea.addEventListener('dragleave', function() {
-            this.style.borderColor = '#ddd';
-            this.style.backgroundColor = '';
-        });
+            uploadArea.addEventListener('dragleave', function() {
+                this.style.borderColor = '#ddd';
+                this.style.backgroundColor = '';
+            });
 
-        uploadArea.addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.style.borderColor = '#ddd';
-            this.style.backgroundColor = '';
-            
-            if (e.dataTransfer.files.length > 0) {
-                const fileName = e.dataTransfer.files[0].name;
-                alert(`File "${fileName}" dropped for upload. Click Process to continue.`);
-            }
-        });
-
-        // Modal functionality
-        function openComparisonModal() {
-            document.getElementById('comparisonModal').style.display = 'block';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        // Close modal when clicking outside of it
-        window.addEventListener('click', function(event) {
-            const modals = document.querySelectorAll('.modal');
-            modals.forEach(modal => {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#ddd';
+                this.style.backgroundColor = '';
+                
+                if (e.dataTransfer.files.length > 0) {
+                    const fileName = e.dataTransfer.files[0].name;
+                    showNotification(`File "${fileName}" dropped for upload.`, 'success');
                 }
             });
-        });
+        }
 
         // Run auto-matching functionality
-        document.getElementById('runMatching').addEventListener('click', function() {
-            // Simulate matching process
-            this.querySelector('i').classList.add('fa-spin');
+        const runMatchingBtn = document.getElementById('runMatching');
+        if (runMatchingBtn) {
+            runMatchingBtn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                icon.classList.add('fa-spin');
+                
+                setTimeout(() => {
+                    icon.classList.remove('fa-spin');
+                    showNotification('Auto-matching completed! 158 transactions processed.', 'success');
+                }, 2000);
+            });
+        }
+
+        // Filter functionality
+        initializeFilters();
+    });
+
+    // Modal functionality
+    function openComparisonModal() {
+        document.getElementById('comparisonModal').style.display = 'block';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: ${type === 'success' ? '#2ecc71' : '#3498db'};
+            color: white;
+            border-radius: 5px;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease;
+        `;
+        
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
             setTimeout(() => {
-                this.querySelector('i').classList.remove('fa-spin');
-                alert('Auto-matching completed! 158 transactions processed. 142 matched, 12 partial matches, 4 unmatched.');
-            }, 2000);
-        });
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
 
-        // Add hover animations to buttons
-        const buttons = document.querySelectorAll('.btn');
-        buttons.forEach(button => {
-            button.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.05)';
-            });
-            
-            button.addEventListener('mouseleave', function() {
-                this.style.transform = 'scale(1)';
+    // Initialize filters
+    function initializeFilters() {
+        const filters = document.querySelectorAll('.filter-select');
+        filters.forEach(filter => {
+            filter.addEventListener('change', function() {
+                // Simulate filtering
+                showNotification(`Filter applied: ${this.value}`, 'info');
             });
         });
+    }
 
-        // Add animation to table rows
-        const tableRows = document.querySelectorAll('tr');
-        tableRows.forEach(row => {
-            row.addEventListener('mouseenter', function() {
-                this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
-            });
-            
-            row.addEventListener('mouseleave', function() {
-                this.style.boxShadow = 'none';
-            });
-        });
-    </script>
+    // Add CSS for notifications
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
 </body>
 </html>

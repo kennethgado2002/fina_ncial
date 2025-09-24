@@ -1,5 +1,5 @@
 <?php
-$server = "server10.indevfinite-server.com";
+$server = "localhost";
 $user = "fina_ap";
 $password = "!jxE*qimcyMFe#NS";
 $dbname = "fina_apdb";

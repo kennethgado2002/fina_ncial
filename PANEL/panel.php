@@ -96,19 +96,16 @@ $emp_data = ($result->num_rows > 0) ? $result->fetch_assoc() : ["fname" => "Unkn
                 </a>
                 <ul class="submenu">
                     <li style="display: <?= $ap_visible ? 'block' : 'none' ?>;">
-                        <a href="../AP/vendor_invoiceM.php"><i class="fa-solid fa-file-invoice"></i> Vendor Invoice Management</a>
+                        <a href="../AP/vendor_m.php"><i class="fa-solid fa-file-invoice"></i> Vendor Management</a>
                     </li>
                     <li style="display: <?= $ap_visible ? 'block' : 'none' ?>;">
-                        <a href="../AP/payrollM.php"><i class="fa-solid fa-users"></i> Payroll Management</a>
+                        <a href="../AP/employee_p.php"><i class="fa-solid fa-users"></i> Employee's Payroll</a>
                     </li>
                     <li style="display: <?= $ap_visible ? 'block' : 'none' ?>;">
-                        <a href="../AP/employee_reimbursement.php"><i class="fa-solid fa-user-clock"></i> Employee Reimbursement</a>
+                        <a href="../AP/employee_c.php"><i class="fa-solid fa-user-clock"></i> Employee's Claims</a>
                     </li>
                     <li style="display: <?= $ap_visible_3way ? 'block' : 'none' ?>;">
-                        <a href="../AP/matching.php"><i class="fa-solid fa-layer-group"></i> 3-Way Matching</a>
-                    </li>
-                    <li style="display: <?= $ap_visible_3way ? 'block' : 'none' ?>;">
-                        <a href="../AP/payment_scheduling.php"><i class="fa-solid fa-calendar-alt"></i> Payment Scheduling</a>
+                        <a href="../AP/payment_s.php"><i class="fa-solid fa-calendar-alt"></i> Payment Scheduling</a>
                     </li>
                     <li style="display: <?= $ap_visible ? 'block' : 'none' ?>;">
                         <a href="../AP/aging.php"><i class="fa-solid fa-chart-bar"></i> AP Aging & Reports</a>

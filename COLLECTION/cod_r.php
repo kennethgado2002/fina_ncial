@@ -531,7 +531,7 @@ include "../PANEL/panel.php";
             background-color: #1565c0;
         }
 
-        .courier-icon.grab {
+        .courier-icon.ninja {
             background-color: #00b14f;
         }
 
@@ -539,6 +539,48 @@ include "../PANEL/panel.php";
             font-family: 'Montserrat', sans-serif;
             margin-bottom: 10px;
         }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 5% auto;
+        padding: 0;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 800px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    .modal-footer {
+        padding: 20px;
+        border-top: 1px solid #eee;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
 
         /* Matching Dashboard */
         .matching-stats {
@@ -859,11 +901,11 @@ include "../PANEL/panel.php";
                                     <h3>Flash Express</h3>
                                     <p>Upload remittance file</p>
                                 </div>
-                                <div class="courier-card" onclick="selectCourier('grab')">
-                                    <div class="courier-icon grab">
-                                        <i class="fas fa-motorcycle"></i>
+                                <div class="courier-card" onclick="selectCourier('ninja')">
+                                    <div class="courier-icon ninja">
+                                        <i class="fas fa-user-ninja"></i>
                                     </div>
-                                    <h3>GrabExpress</h3>
+                                    <h3>NinjaVan</h3>
                                     <p>Upload remittance file</p>
                                 </div>
                             </div>
@@ -896,7 +938,7 @@ include "../PANEL/panel.php";
                                         <option value="lbc">LBC Express</option>
                                         <option value="jnt">J&T Express</option>
                                         <option value="flash">Flash Express</option>
-                                        <option value="grab">GrabExpress</option>
+                                        <option value="ninja">NinjaVan</option>
                                     </select>
                                 </div>
                                 <div class="filter-item">
@@ -967,8 +1009,8 @@ include "../PANEL/panel.php";
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>grab_remit_2025-09-06.csv</td>
-                                            <td>GrabExpress</td>
+                                            <td>ninja_remit_2025-09-06.csv</td>
+                                            <td>NinjaVan</td>
                                             <td>Aug 30 - Sep 5, 2025</td>
                                             <td>29</td>
                                             <td>₱45,200</td>
@@ -1032,7 +1074,7 @@ include "../PANEL/panel.php";
                                         <option value="lbc">LBC Express</option>
                                         <option value="jnt">J&T Express</option>
                                         <option value="flash">Flash Express</option>
-                                        <option value="grab">GrabExpress</option>
+                                        <option value="ninja">NinjaVan</option>
                                     </select>
                                 </div>
                                 <div class="filter-item">
@@ -1114,7 +1156,7 @@ include "../PANEL/panel.php";
                                         <tr>
                                             <td>ORD-2025-088</td>
                                             <td>Carlos Lim</td>
-                                            <td>GrabExpress</td>
+                                            <td>NinjaVan</td>
                                             <td>Rider-033</td>
                                             <td>₱3,800.00</td>
                                             <td>₱3,800.00</td>
@@ -1216,7 +1258,7 @@ include "../PANEL/panel.php";
                                         <option value="lbc">LBC Express</option>
                                         <option value="jnt">J&T Express</option>
                                         <option value="flash">Flash Express</option>
-                                        <option value="grab">GrabExpress</option>
+                                        <option value="ninja">NinjaVan</option>
                                     </select>
                                 </div>
                                 <div class="filter-item">
@@ -1296,7 +1338,7 @@ include "../PANEL/panel.php";
                                             <td>Overdue Remittance</td>
                                             <td>ORD-2025-095</td>
                                             <td>Sarah Johnson</td>
-                                            <td>GrabExpress</td>
+                                            <td>NinjaVan</td>
                                             <td>₱3,200.00</td>
                                             <td>₱3,200.00</td>
                                             <td>₱0.00</td>
@@ -1365,7 +1407,7 @@ include "../PANEL/panel.php";
                                         <option value="lbc">LBC Express</option>
                                         <option value="jnt">J&T Express</option>
                                         <option value="flash">Flash Express</option>
-                                        <option value="grab">GrabExpress</option>
+                                        <option value="ninja">NinjaVan</option>
                                     </select>
                                 </div>
                                 <div class="filter-item">
@@ -1446,7 +1488,7 @@ include "../PANEL/panel.php";
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>GrabExpress</td>
+                                            <td>NinjaVan</td>
                                             <td>Aug 30 - Sep 5</td>
                                             <td>₱45,200.00</td>
                                             <td>₱1,356.00</td>
@@ -1512,7 +1554,7 @@ include "../PANEL/panel.php";
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>GrabExpress</td>
+                                            <td>NinjaVan</td>
                                             <td>₱0.00</td>
                                             <td>₱3,200.00</td>
                                             <td>₱3,200.00</td>
@@ -1530,19 +1572,12 @@ include "../PANEL/panel.php";
                 </div>
             </div>
 
-            <!-- Footer -->
-            <div class="footer">
-                <p>&copy; 2025 Financial System - COD Reconciliation</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Comparison Modal -->
-    <div id="comparisonModal" class="modal">
+                <!-- Comparison Modal -->
+    <div id="ComparisonModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title">COD Order Comparison</h2>
-                <span class="close" onclick="closeModal('comparisonModal')">&times;</span>
+                <span class="close" onclick="closeModal('ComparisonModal')">&times;</span>
             </div>
             <div class="modal-body">
                 <div class="form-row">
@@ -1632,8 +1667,15 @@ include "../PANEL/panel.php";
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('comparisonModal')">Close</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('ComparisonModal')">Close</button>
                 <button type="button" class="btn btn-primary">Post to GL</button>
+            </div>
+        </div>
+    </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>&copy; 2025 Financial System - COD Reconciliation</p>
             </div>
         </div>
     </div>
@@ -1693,7 +1735,7 @@ include "../PANEL/panel.php";
                 case 'lbc': courierName = 'LBC Express'; break;
                 case 'jnt': courierName = 'J&T Express'; break;
                 case 'flash': courierName = 'Flash Express'; break;
-                case 'grab': courierName = 'GrabExpress'; break;
+                case 'ninja': courierName = 'NinjaVan'; break;
             }
             uploadText.textContent = `Upload ${courierName} Remittance File`;
         }
@@ -1736,7 +1778,7 @@ include "../PANEL/panel.php";
 
         // Modal functionality
         function openComparisonModal() {
-            document.getElementById('comparisonModal').style.display = 'block';
+            document.getElementById('ComparisonModal').style.display = 'block';
         }
 
         function closeModal(modalId) {
