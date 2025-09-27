@@ -1,0 +1,31 @@
+DATABASE NAME
+DATABASE USER
+PASSWORD
+
+fina_apdb
+fina_ap
+!jxE*qimcyMFe#NS
+
+fina_ardb
+fina_ar
+IlAFtAVt^VlefkeX
+
+fina_budgetmngdb
+fina_budgetmng
+OqihrkmSeuZ@TdBu
+
+fina_disbursementdb
+fina_disbursement
+^sD8tA3Xk!IrGZQL
+
+fina_collectiondb
+fina_collection
+fe0a!PlVg4aEjRPa
+
+fina_generalledgerdb
+fina_generalledger
+D!5#vBQYaeaJju@A
+
+fina_ncialdb
+fina_ncial
+o5z!dtAeU3y6H@xD
