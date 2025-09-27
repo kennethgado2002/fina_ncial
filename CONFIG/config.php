@@ -1,14 +1,33 @@
 <?php
-$server = "localhost";
-$user = "fina_ncial";
-$password = "o5z!dtAeU3y6H@xD";
-$dbname = "fina_ncialdb";
+$indevfinitedb = false;
 
-// Create connection
-$conn = new mysqli($server, $user, $password, $dbname);
+if($indevfinitedb == TRUE){
+    $server = "localhost";
+    $user = "fina_ncial";
+    $password = "o5z!dtAeU3y6H@xD";
+    $dbname = "fina_ncialdb";
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    // Create connection
+    $conn = new mysqli($server, $user, $password, $dbname);
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+}
+else{
+    $server = "localhost";
+    $user = "root";
+    $password = "";
+    $dbname ="fina_ncialdb";
+
+    // Create connection
+    $conn = new mysqli($server, $user, $password, $dbname);
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
 }
 ?>
